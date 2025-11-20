@@ -105,12 +105,13 @@ public class VoxelWorld {
     //TODO this is where you'll generate your world
     public void generateLayers() {
         //generate a SINGLE block under the player:
-        Vector3i pos = new Vector3i(getRecommendedSpawn());
+
         for (int x = 0; x < 20; x++){
             for (int z = 0; z < 20; z++){
-                setBlock(pos.x+x, pos.y, pos.z+z, VoxelPalette.STONE_ID);
+                setBlock(x, 1, z, VoxelPalette.STONE_ID);
             }
         }
+        Vector3i pos = new Vector3i(getRecommendedSpawn());
 
 
     }
@@ -124,11 +125,12 @@ public class VoxelWorld {
     }
 
     public Vector3f getRecommendedSpawn() {
-        int cx = sizeX / 2;
+        return new Vector3f(1f, 2f, 1f);
+        /*int cx = sizeX / 2;
         int cz = sizeZ / 2;
         int ty = getTopSolidY(cx, cz);
         if (ty < 0) ty = groundHeight;
-        return new Vector3f(cx + 0.5f, ty + 3.0f, cz + 0.5f);
+        return new Vector3f(cx + 0.5f, ty + 3.0f, cz + 0.5f);*/
     }
 
     private void initMaterials() {

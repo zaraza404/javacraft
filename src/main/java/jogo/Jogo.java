@@ -14,6 +14,7 @@ import jogo.appstate.RenderAppState;
 import jogo.appstate.InteractionAppState;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
+import jogo.gameobject.character.NonPlayebleCharacter;
 
 /**
  * Main application entry.
@@ -51,19 +52,26 @@ public class Jogo extends SimpleApplication {
         InputAppState input = new InputAppState();
         stateManager.attach(input);
 
-        WorldAppState world = new WorldAppState(rootNode, assetManager, physicsSpace, cam, input);
-        stateManager.attach(world);
+
 
         // Engine registry and render layers
         GameRegistry registry = new GameRegistry();
         RenderIndex renderIndex = new RenderIndex();
         stateManager.attach(new RenderAppState(rootNode, assetManager, registry, renderIndex));
+
+        WorldAppState world = new WorldAppState(rootNode, assetManager, registry, physicsSpace, cam, input);
+        stateManager.attach(world);
         stateManager.attach(new InteractionAppState(rootNode, cam, input, renderIndex, world));
+
 
         // Demo objects
         // Chest chest = new Chest();
         // chest.setPosition(26.5f, world.getRecommendedSpawnPosition().y - 2f, 26.5f);
         // registry.add(chest);
+
+        NonPlayebleCharacter npc = new NonPlayebleCharacter();
+        npc.setPosition(2,2,2);
+        registry.add(npc);
 
         PlayerAppState player = new PlayerAppState(rootNode, assetManager, cam, input, physicsSpace, world);
         stateManager.attach(player);

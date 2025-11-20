@@ -1,5 +1,18 @@
 package jogo.gameobject;
 
+import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Plane;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.BillboardControl;
+import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.shader.VarType;
 import jogo.framework.math.Vec3;
 
 /**
@@ -29,4 +42,11 @@ public abstract class GameObject {
     public void setPosition(float x, float y, float z) {
         this.position.set(x, y, z);
     }
+
+    /*public Spatial getSpatial(){
+        Quad quad = new Quad(10,10);
+        Geometry obj_visual = new Geometry(getName(), quad);
+        obj_visual.setMaterial(new Material().setTexture(assetManager.load_texture("Textures/CharacterBanners/gabe.png"));
+        return obj_visual;
+    }*/
 }

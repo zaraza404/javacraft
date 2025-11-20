@@ -11,10 +11,14 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.texture.Texture;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
 import jogo.framework.math.Vec3;
 import jogo.gameobject.GameObject;
+import jogo.gameobject.character.NonPlayebleCharacter;
 import jogo.gameobject.character.Player;
 import jogo.gameobject.item.Item;
 
@@ -91,6 +95,13 @@ public class RenderAppState extends BaseAppState {
             Geometry g = new Geometry(obj.getName(), new Box(0.3f, 0.3f, 0.3f));
             g.setMaterial(colored(ColorRGBA.Yellow));
             return g;
+        } else if (obj instanceof NonPlayebleCharacter) {
+            Quad quad = new Quad(10,10);
+            Geometry obj_visual = new Geometry(obj.getName(), quad);
+            Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+            mat.setTexture("DiffuseMap", assetManager.loadTexture("Textures/CharacterBanners/gabe.png"));
+            obj_visual.setMaterial(mat);
+            return obj_visual;
         }
         return null;
     }

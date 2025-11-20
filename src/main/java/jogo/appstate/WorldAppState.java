@@ -11,12 +11,17 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import jogo.engine.GameRegistry;
+import jogo.gameobject.GameObject;
+import jogo.gameobject.character.NonPlayebleCharacter;
 import jogo.voxel.VoxelWorld;
 
 public class WorldAppState extends BaseAppState {
 
     private final Node rootNode;
     private final AssetManager assetManager;
+    private final GameRegistry registry;
     private final PhysicsSpace physicsSpace;
     private final Camera cam;
     private final InputAppState input;
@@ -27,9 +32,10 @@ public class WorldAppState extends BaseAppState {
     private VoxelWorld voxelWorld;
     private com.jme3.math.Vector3f spawnPosition;
 
-    public WorldAppState(Node rootNode, AssetManager assetManager, PhysicsSpace physicsSpace, Camera cam, InputAppState input) {
+    public WorldAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, PhysicsSpace physicsSpace, Camera cam, InputAppState input) {
         this.rootNode = rootNode;
         this.assetManager = assetManager;
+        this.registry = registry;
         this.physicsSpace = physicsSpace;
         this.cam = cam;
         this.input = input;
@@ -76,6 +82,8 @@ public class WorldAppState extends BaseAppState {
 
     @Override
     public void update(float tpf) {
+        var current = registry.getAll();
+
         if (input != null && input.isMouseCaptured() && input.consumeBreakRequested()) {
             var pick = voxelWorld.pickFirstSolid(cam, 6f);
             pick.ifPresent(hit -> {
@@ -89,6 +97,13 @@ public class WorldAppState extends BaseAppState {
         if (input != null && input.consumeToggleShadingRequested()) {
             voxelWorld.toggleRenderDebug();
         }
+        for (GameObject obj : current) {
+            if (obj instanceof NonPlayebleCharacter){
+
+                ((NonPlayebleCharacter) obj).update(tpf);
+            }
+        }
+
     }
 
     @Override
