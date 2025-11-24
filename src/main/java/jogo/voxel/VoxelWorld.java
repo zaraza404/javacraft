@@ -8,12 +8,14 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture2D;
+import jogo.framework.math.Vec3;
 import jogo.util.Hit;
 import jogo.util.ProcTextures;
+import jogo.util.pathfinding.Pathfinding;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +39,8 @@ public class VoxelWorld {
     private final int chunkCountX, chunkCountY, chunkCountZ;
     private final Chunk[][][] chunks;
 
+    private final Pathfinding pathfinding;
+
     public VoxelWorld(AssetManager assetManager, int sizeX, int sizeY, int sizeZ) {
         this.assetManager = assetManager;
         this.sizeX = sizeX;
@@ -54,6 +58,7 @@ public class VoxelWorld {
                 for (int cz = 0; cz < chunkCountZ; cz++)
                     chunks[cx][cy][cz] = new Chunk(cx, cy, cz);
         initMaterials();
+        this.pathfinding = new Pathfinding();
     }
 
     // Helper to get chunk and local coordinates
@@ -74,6 +79,7 @@ public class VoxelWorld {
         if (c == null) return VoxelPalette.AIR_ID;
         return c.get(lx(x), ly(y), lz(z));
     }
+
     public void setBlock(int x, int y, int z, byte id) {
         Chunk c = getChunk(x, y, z);
         if (c != null) {
@@ -104,11 +110,14 @@ public class VoxelWorld {
 
     //TODO this is where you'll generate your world
     public void generateLayers() {
-        //generate a SINGLE block under the player:
+        LevelMap level = new LevelMap("level1");
+        byte[][][] level_block_layout= level.getMapBlockLayout();
 
-        for (int x = 0; x < 20; x++){
-            for (int z = 0; z < 20; z++){
-                setBlock(x, 1, z, VoxelPalette.STONE_ID);
+        for (int z = 0; z < 16; z++) {
+            for (int x = 0; x < 16; x++) {
+                for (int y = 0; y < 6; y++) {
+                    setBlock(x,y,z,level_block_layout[x][z][y]);
+                }
             }
         }
         Vector3i pos = new Vector3i(getRecommendedSpawn());
@@ -125,13 +134,73 @@ public class VoxelWorld {
     }
 
     public Vector3f getRecommendedSpawn() {
-        return new Vector3f(1f, 2f, 1f);
+
+
+
+        return new Vector3f(2.1f, 1.5f, 2.1f);
         /*int cx = sizeX / 2;
         int cz = sizeZ / 2;
         int ty = getTopSolidY(cx, cz);
         if (ty < 0) ty = groundHeight;
         return new Vector3f(cx + 0.5f, ty + 3.0f, cz + 0.5f);*/
+
     }
+
+
+    public ArrayList<Vec3> getWalkable(Vec3 character_current_position){
+        int character_x = (int) character_current_position.x;
+        int character_y = (int) character_current_position.y;
+        int character_z = (int) character_current_position.z;
+
+        ArrayList<Vec3> walkable = new ArrayList<>();
+        ArrayList<int[]> needToCheck = new ArrayList<>();
+        ArrayList<int[]> alreadyChecked = new ArrayList<>();
+
+        needToCheck.add(new int[]{character_x, character_y, character_z});
+
+        while (!needToCheck.isEmpty()){
+            int[] pos = needToCheck.remove(0);
+            alreadyChecked.add(pos);
+            if (pos[0] > 0 && pos[1] > 0 && pos[2] > 0){
+                if (CheckPosWalkable(pos[0], pos[1], pos[2])){
+                    walkable.add(new Vec3(pos[0], pos[1], pos[2]));
+                    addIfNotChecked(pos[0]+1, pos[1], pos[2],alreadyChecked,needToCheck);
+                    addIfNotChecked(pos[0], pos[1], pos[2]+1,alreadyChecked,needToCheck);
+                    addIfNotChecked(pos[0]-1, pos[1], pos[2],alreadyChecked,needToCheck);
+                    addIfNotChecked(pos[0], pos[1], pos[2]-1,alreadyChecked,needToCheck);
+                }
+            }
+        }
+        return walkable;
+
+    }
+
+    private void addIfNotChecked(int x,int y,int z, ArrayList<int[]> alreadyChecked, ArrayList<int[]> needToCheck) {
+        boolean checked = false;
+
+        for (int[] pos : alreadyChecked) {
+            if (pos[0] == x && pos[1] == y && pos[2] == z) {
+                checked = true;
+            }
+        }
+        if (!checked){
+            alreadyChecked.add(new int[]{x, y, z});
+            needToCheck.add(new int[]{x, y, z});
+        }
+    }
+
+    private boolean CheckPosWalkable(int x, int y, int z){
+        if (x < 0 || x >= 16 || z < 0 || z >= 16 || y < 0 || y >= 5) {
+            return false;
+        }
+        // Check if there's a block BELOW to stand on, and current position is air
+        if ((getBlock(x, y-1, z) != 0) && (getBlock(x, y, z) == 0)){
+            return true;
+        }
+        return false;
+    }
+
+
 
     private void initMaterials() {
         // Single material for STONE blocks

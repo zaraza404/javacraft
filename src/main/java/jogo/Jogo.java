@@ -14,6 +14,7 @@ import jogo.appstate.RenderAppState;
 import jogo.appstate.InteractionAppState;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
+import jogo.gameobject.character.EnemyCharacter;
 import jogo.gameobject.character.NonPlayebleCharacter;
 
 /**
@@ -57,10 +58,13 @@ public class Jogo extends SimpleApplication {
         // Engine registry and render layers
         GameRegistry registry = new GameRegistry();
         RenderIndex renderIndex = new RenderIndex();
-        stateManager.attach(new RenderAppState(rootNode, assetManager, registry, renderIndex));
 
         WorldAppState world = new WorldAppState(rootNode, assetManager, registry, physicsSpace, cam, input);
         stateManager.attach(world);
+
+
+        stateManager.attach(new RenderAppState(rootNode, assetManager, registry, renderIndex, world));
+
         stateManager.attach(new InteractionAppState(rootNode, cam, input, renderIndex, world));
 
 
@@ -69,12 +73,12 @@ public class Jogo extends SimpleApplication {
         // chest.setPosition(26.5f, world.getRecommendedSpawnPosition().y - 2f, 26.5f);
         // registry.add(chest);
 
-        NonPlayebleCharacter npc = new NonPlayebleCharacter();
-        npc.setPosition(2,2,2);
-        registry.add(npc);
-
         PlayerAppState player = new PlayerAppState(rootNode, assetManager, cam, input, physicsSpace, world);
         stateManager.attach(player);
+
+        EnemyCharacter enemy = new EnemyCharacter("RedBall");
+        enemy.setPosition(2.1f, 1.1f, 2.1f);
+        registry.add(enemy);
 
         // Post-processing: SSAO for subtle contact shadows
         try {

@@ -4,6 +4,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -13,9 +14,16 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import jogo.engine.GameRegistry;
+import jogo.framework.math.Vec3;
 import jogo.gameobject.GameObject;
 import jogo.gameobject.character.NonPlayebleCharacter;
+import jogo.util.pathfinding.Pathfinding;
 import jogo.voxel.VoxelWorld;
+
+import javax.naming.ldap.Control;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 public class WorldAppState extends BaseAppState {
 
@@ -32,6 +40,9 @@ public class WorldAppState extends BaseAppState {
     private VoxelWorld voxelWorld;
     private com.jme3.math.Vector3f spawnPosition;
 
+    private HashMap<NonPlayebleCharacter, BetterCharacterControl> npcControls = new HashMap<>();
+    private Pathfinding pathfinding;
+
     public WorldAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, PhysicsSpace physicsSpace, Camera cam, InputAppState input) {
         this.rootNode = rootNode;
         this.assetManager = assetManager;
@@ -39,6 +50,7 @@ public class WorldAppState extends BaseAppState {
         this.physicsSpace = physicsSpace;
         this.cam = cam;
         this.input = input;
+        this.pathfinding = new Pathfinding();
     }
 
     public void registerPlayerAppState(PlayerAppState playerAppState) {
@@ -76,8 +88,34 @@ public class WorldAppState extends BaseAppState {
         return spawnPosition != null ? spawnPosition.clone() : new com.jme3.math.Vector3f(25.5f, 12f, 25.5f);
     }
 
+    public void addNonPlayableCharacterControl(NonPlayebleCharacter npc, Spatial spatial){
+        BetterCharacterControl npcControl =  new BetterCharacterControl(0.42f, 1.8f, 80f);
+
+        npcControl.setJumpForce(new Vector3f(0,5f,0));
+        npcControl.setGravity(new Vector3f(0, -24f, 0));
+        npcControl.setJumpForce(new Vector3f(0, 400f, 0));
+        physicsSpace.add(npcControl);
+        spatial.addControl(npcControl);
+        npcControls.put(npc, npcControl);
+        npcControl.warp(npc.getPosition().toVector3f());
+
+    }
+
     public VoxelWorld getVoxelWorld() {
         return voxelWorld;
+    }
+
+    public ArrayList<Vec3> getPathFromTo(Vec3 from, Vec3 to){
+        ArrayList<Vec3> path = pathfinding.BuildPath(from, to, voxelWorld.getWalkable(from));
+        ArrayList<Vec3> path_centered = new ArrayList<>();
+        for (Vec3 pos:path){
+            path_centered.add(pos.add_vec3(new Vec3(0.5f,0.1f,0.5f)));
+        }
+        return path_centered;
+    }
+
+    public Vec3 getPlayerPosition(){
+        return playerAppState.getPlayer().getPosition();
     }
 
     @Override
@@ -97,11 +135,25 @@ public class WorldAppState extends BaseAppState {
         if (input != null && input.consumeToggleShadingRequested()) {
             voxelWorld.toggleRenderDebug();
         }
-        for (GameObject obj : current) {
-            if (obj instanceof NonPlayebleCharacter){
 
-                ((NonPlayebleCharacter) obj).update(tpf);
+        for(NonPlayebleCharacter npc : npcControls.keySet() ){
+            BetterCharacterControl control = npcControls.get(npc);
+            npc.setPosition(new Vec3(control.getSpatial().getWorldTranslation()));
+            if (npc.getPosition().xzDistanceTo(npc.getTargetPosition()) < 0.5f) {//returns the same value all the time
+                npc.decision(this);
+                control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
+                npc.onArrivedAtPos();
+                if (npc.getPath().isEmpty()) {
+                    npc.decision(this);
+                }
+            } else {
+                control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
+
             }
+
+
+
+
         }
 
     }

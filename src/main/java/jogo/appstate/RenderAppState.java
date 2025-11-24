@@ -4,11 +4,14 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Quad;
@@ -33,15 +36,17 @@ public class RenderAppState extends BaseAppState {
     private final AssetManager assetManager;
     private final GameRegistry registry;
     private final RenderIndex renderIndex;
+    private final WorldAppState world;
 
     private Node gameNode;
     private final Map<GameObject, Spatial> instances = new HashMap<>();
 
-    public RenderAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, RenderIndex renderIndex) {
+    public RenderAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, RenderIndex renderIndex, WorldAppState world) {
         this.rootNode = rootNode;
         this.assetManager = assetManager;
         this.registry = registry;
         this.renderIndex = renderIndex;
+        this.world = world;
     }
 
     @Override
@@ -64,11 +69,10 @@ public class RenderAppState extends BaseAppState {
                     gameNode.attachChild(s);
                     instances.put(obj, s);
                     renderIndex.register(s, obj);
+                    if (obj instanceof NonPlayebleCharacter){
+                        world.addNonPlayableCharacterControl((NonPlayebleCharacter) obj, s);
+                    }
                 }
-            }
-            if (s != null) {
-                Vec3 p = obj.getPosition();
-                s.setLocalTranslation(new Vector3f(p.x, p.y, p.z));
             }
         }
 
@@ -96,12 +100,9 @@ public class RenderAppState extends BaseAppState {
             g.setMaterial(colored(ColorRGBA.Yellow));
             return g;
         } else if (obj instanceof NonPlayebleCharacter) {
-            Quad quad = new Quad(10,10);
-            Geometry obj_visual = new Geometry(obj.getName(), quad);
-            Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-            mat.setTexture("DiffuseMap", assetManager.loadTexture("Textures/CharacterBanners/gabe.png"));
-            obj_visual.setMaterial(mat);
-            return obj_visual;
+            Geometry g = new Geometry(obj.getName(), new Sphere(5, 5, 0.3f));
+            g.setMaterial(colored(ColorRGBA.Red));
+            return g;
         }
         return null;
     }

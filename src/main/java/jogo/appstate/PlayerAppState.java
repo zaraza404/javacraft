@@ -11,6 +11,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import jogo.framework.math.Vec3;
 import jogo.gameobject.character.Player;
 
 public class PlayerAppState extends BaseAppState {
@@ -34,7 +35,7 @@ public class PlayerAppState extends BaseAppState {
     private float moveSpeed = 8.0f; // m/s
     private float sprintMultiplier = 1.7f;
     private float mouseSensitivity = 30f; // degrees per mouse analog unit
-    private float eyeHeight = 1.7f;
+    private float eyeHeight = 0.9f;
 
     private Vector3f spawnPosition = new Vector3f(25.5f, 12f, 25.5f);
     private PointLight playerLight;
@@ -127,6 +128,8 @@ public class PlayerAppState extends BaseAppState {
             characterControl.jump();
         }
 
+        player.setPosition(new Vec3(playerNode.getWorldTranslation()));
+
         // place camera at eye height above physics location
         applyViewToCamera();
 
@@ -186,5 +189,9 @@ public class PlayerAppState extends BaseAppState {
             physicsSpace.remove(characterControl);
             physicsSpace.add(characterControl);
         }
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

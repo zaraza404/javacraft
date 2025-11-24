@@ -1,18 +1,6 @@
 package jogo.gameobject;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Plane;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.control.BillboardControl;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.shader.VarType;
 import jogo.framework.math.Vec3;
 
 /**
@@ -21,7 +9,7 @@ import jogo.framework.math.Vec3;
  */
 public abstract class GameObject {
     protected final String name;
-    protected Vec3 position = new Vec3();
+    protected Vec3 position = new Vec3(new Vector3f(0, 0, 0));
 
     protected GameObject(String name) {
         this.name = name;
