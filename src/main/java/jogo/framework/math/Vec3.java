@@ -30,6 +30,9 @@ public class Vec3 {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
     }
 
+    public float get_angle(){
+        return (float)(Math.atan2(x, z));
+    }
     public Vec3 normalized(){
         double length = this.length();
         return new Vec3((float) (this.x / length),(float)(this.y / length),(float)(this.z / length));

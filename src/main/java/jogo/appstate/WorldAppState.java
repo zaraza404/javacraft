@@ -16,14 +16,13 @@ import com.jme3.scene.Spatial;
 import jogo.engine.GameRegistry;
 import jogo.framework.math.Vec3;
 import jogo.gameobject.GameObject;
-import jogo.gameobject.character.NonPlayebleCharacter;
+import jogo.gameobject.character.GameCharacter;
+import jogo.gameobject.character.NonPlayebleGameCharacter;
 import jogo.util.pathfinding.Pathfinding;
 import jogo.voxel.VoxelWorld;
 
-import javax.naming.ldap.Control;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 public class WorldAppState extends BaseAppState {
 
@@ -40,7 +39,7 @@ public class WorldAppState extends BaseAppState {
     private VoxelWorld voxelWorld;
     private com.jme3.math.Vector3f spawnPosition;
 
-    private HashMap<NonPlayebleCharacter, BetterCharacterControl> npcControls = new HashMap<>();
+    private HashMap<NonPlayebleGameCharacter, BetterCharacterControl> npcControls = new HashMap<>();
     private Pathfinding pathfinding;
 
     public WorldAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, PhysicsSpace physicsSpace, Camera cam, InputAppState input) {
@@ -88,7 +87,7 @@ public class WorldAppState extends BaseAppState {
         return spawnPosition != null ? spawnPosition.clone() : new com.jme3.math.Vector3f(25.5f, 12f, 25.5f);
     }
 
-    public void addNonPlayableCharacterControl(NonPlayebleCharacter npc, Spatial spatial){
+    public void addNonPlayableCharacterControl(NonPlayebleGameCharacter npc, Spatial spatial){
         BetterCharacterControl npcControl =  new BetterCharacterControl(0.42f, 1.8f, 80f);
 
         npcControl.setJumpForce(new Vector3f(0,5f,0));
@@ -135,21 +134,45 @@ public class WorldAppState extends BaseAppState {
         if (input != null && input.consumeToggleShadingRequested()) {
             voxelWorld.toggleRenderDebug();
         }
+        for (GameObject obj : current){
+            if (obj instanceof GameCharacter chr){
+                chr.update(tpf);
+                if (chr instanceof NonPlayebleGameCharacter npc){
+                    if (npc.getHealth() <= 0.0f) {
+                        registry.remove(npc);
+                        continue;
+                    }
 
-        for(NonPlayebleCharacter npc : npcControls.keySet() ){
-            BetterCharacterControl control = npcControls.get(npc);
-            npc.setPosition(new Vec3(control.getSpatial().getWorldTranslation()));
-            if (npc.getPosition().xzDistanceTo(npc.getTargetPosition()) < 0.5f) {//returns the same value all the time
-                npc.decision(this);
-                control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
-                npc.onArrivedAtPos();
-                if (npc.getPath().isEmpty()) {
-                    npc.decision(this);
+                    BetterCharacterControl control = npcControls.get(npc);
+
+                    if (control == null){
+                        continue;
+                    }
+                    npc.setPosition(new Vec3(control.getSpatial().getWorldTranslation()));
+                    if (npc.getPosition().xzDistanceTo(getPlayerPosition()) < 1f){
+                        //npc.attack(playerAppState.getPlayer());
+                    }
+
+                    if (npc.getPosition().xzDistanceTo(npc.getTargetPosition()) < 0.2f) {//returns the same value all the time
+                        control.setWalkDirection(Vector3f.ZERO);
+                        npc.decision(this);
+                        control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
+                        npc.onArrivedAtPos();
+                        if (npc.getPath().isEmpty()) {
+                            npc.decision(this);
+                        }
+                    } else {
+                        control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
+                        System.out.println(npc.get_movement_vec3(tpf).get_angle());
+                        control.setViewDirection(npc.get_movement_vec3(tpf).toVector3f());
+                    }
+
                 }
-            } else {
-                control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
-
             }
+
+        }
+        for(NonPlayebleGameCharacter npc : npcControls.keySet() ){
+
 
 
 

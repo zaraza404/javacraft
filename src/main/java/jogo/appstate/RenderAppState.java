@@ -4,24 +4,17 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
-import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.texture.Texture;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
-import jogo.framework.math.Vec3;
 import jogo.gameobject.GameObject;
-import jogo.gameobject.character.NonPlayebleCharacter;
+import jogo.gameobject.character.NonPlayebleGameCharacter;
 import jogo.gameobject.character.Player;
 import jogo.gameobject.item.Item;
 
@@ -69,8 +62,8 @@ public class RenderAppState extends BaseAppState {
                     gameNode.attachChild(s);
                     instances.put(obj, s);
                     renderIndex.register(s, obj);
-                    if (obj instanceof NonPlayebleCharacter){
-                        world.addNonPlayableCharacterControl((NonPlayebleCharacter) obj, s);
+                    if (obj instanceof NonPlayebleGameCharacter){
+                        world.addNonPlayableCharacterControl((NonPlayebleGameCharacter) obj, s);
                     }
                 }
             }
@@ -99,10 +92,12 @@ public class RenderAppState extends BaseAppState {
             Geometry g = new Geometry(obj.getName(), new Box(0.3f, 0.3f, 0.3f));
             g.setMaterial(colored(ColorRGBA.Yellow));
             return g;
-        } else if (obj instanceof NonPlayebleCharacter) {
-            Geometry g = new Geometry(obj.getName(), new Sphere(5, 5, 0.3f));
-            g.setMaterial(colored(ColorRGBA.Red));
+        } else if (obj instanceof NonPlayebleGameCharacter) {
+            Spatial g = assetManager.loadModel("Models/bob.glb");
+            g.scale(0.2f);
+            g.rotate(0, (float)Math.PI / -2.0f, 0);
             return g;
+
         }
         return null;
     }

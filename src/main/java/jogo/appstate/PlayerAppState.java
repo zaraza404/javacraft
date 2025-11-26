@@ -63,6 +63,7 @@ public class PlayerAppState extends BaseAppState {
         // Engine-neutral player entity (no engine visuals here)
         player = new Player();
 
+
         // BetterCharacterControl(radius, height, mass)
         characterControl = new BetterCharacterControl(0.42f, 1.8f, 80f);
         characterControl.setGravity(new Vector3f(0, -24f, 0));
@@ -88,6 +89,9 @@ public class PlayerAppState extends BaseAppState {
 
     @Override
     public void update(float tpf) {
+        // update player class
+        player.update(tpf);
+
         // respawn on request
         if (input.consumeRespawnRequested()) {
             // refresh spawn from world in case terrain changed

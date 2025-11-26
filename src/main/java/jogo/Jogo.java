@@ -14,8 +14,7 @@ import jogo.appstate.RenderAppState;
 import jogo.appstate.InteractionAppState;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
-import jogo.gameobject.character.EnemyCharacter;
-import jogo.gameobject.character.NonPlayebleCharacter;
+import jogo.gameobject.character.EnemyGameCharacter;
 
 /**
  * Main application entry.
@@ -65,7 +64,9 @@ public class Jogo extends SimpleApplication {
 
         stateManager.attach(new RenderAppState(rootNode, assetManager, registry, renderIndex, world));
 
-        stateManager.attach(new InteractionAppState(rootNode, cam, input, renderIndex, world));
+        PlayerAppState player = new PlayerAppState(rootNode, assetManager, cam, input, physicsSpace, world);
+
+        stateManager.attach(new InteractionAppState(rootNode, cam, input, renderIndex, world, player));
 
 
         // Demo objects
@@ -73,10 +74,10 @@ public class Jogo extends SimpleApplication {
         // chest.setPosition(26.5f, world.getRecommendedSpawnPosition().y - 2f, 26.5f);
         // registry.add(chest);
 
-        PlayerAppState player = new PlayerAppState(rootNode, assetManager, cam, input, physicsSpace, world);
+
         stateManager.attach(player);
 
-        EnemyCharacter enemy = new EnemyCharacter("RedBall");
+        EnemyGameCharacter enemy = new EnemyGameCharacter("RedBall");
         enemy.setPosition(2.1f, 1.1f, 2.1f);
         registry.add(enemy);
 
@@ -94,7 +95,7 @@ public class Jogo extends SimpleApplication {
             System.out.println("SSAO not available (effects module missing?): " + e.getMessage());
         }
 
-        // HUD (just a crosshair for now)
-        stateManager.attach(new HudAppState(guiNode, assetManager));
+
+        stateManager.attach(new HudAppState(guiNode, assetManager,player));
     }
 }

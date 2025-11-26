@@ -1,19 +1,17 @@
 package jogo.gameobject.character;
 
-import com.jme3.math.Vector3f;
 import jogo.appstate.WorldAppState;
 import jogo.framework.math.Vec3;
-import jogo.voxel.VoxelWorld;
 
 import java.util.ArrayList;
 
-public abstract class NonPlayebleCharacter extends Character{
-    protected float speed = 100.0f;
+public abstract class NonPlayebleGameCharacter extends GameCharacter {
+    protected float speed = 50f;
     protected Vec3 target_position = position;
     protected ArrayList<Vec3> path;
 
 
-    public NonPlayebleCharacter(String name) {
+    public NonPlayebleGameCharacter(String name) {
         super(name);
         path = new ArrayList<>();
     }

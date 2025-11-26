@@ -10,6 +10,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.collision.CollisionResults;
 import jogo.engine.RenderIndex;
 import jogo.gameobject.GameObject;
+import jogo.gameobject.character.EnemyGameCharacter;
+import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.item.Item;
 import jogo.voxel.VoxelWorld;
 
@@ -20,14 +22,16 @@ public class InteractionAppState extends BaseAppState {
     private final InputAppState input;
     private final RenderIndex renderIndex;
     private final WorldAppState world;
+    private final PlayerAppState player;
     private float reach = 5.5f;
 
-    public InteractionAppState(Node rootNode, Camera cam, InputAppState input, RenderIndex renderIndex, WorldAppState world) {
+    public InteractionAppState(Node rootNode, Camera cam, InputAppState input, RenderIndex renderIndex, WorldAppState world, PlayerAppState player) {
         this.rootNode = rootNode;
         this.cam = cam;
         this.input = input;
         this.renderIndex = renderIndex;
         this.world = world;
+        this.player = player;
     }
 
     @Override
@@ -49,6 +53,11 @@ public class InteractionAppState extends BaseAppState {
         if (results.size() > 0) {
             Spatial hit = results.getClosestCollision().getGeometry();
             GameObject obj = findRegistered(hit);
+            if (obj instanceof EnemyGameCharacter character) {
+                System.out.println("Attacked EnemyCharacter: " + obj.getName());
+                player.getPlayer().attack((GameCharacter) obj);
+                return;
+            }
             if (obj instanceof Item item) {
                 item.onInteract();
                 System.out.println("Interacted with item: " + obj.getName());
