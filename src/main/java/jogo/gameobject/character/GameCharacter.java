@@ -4,7 +4,7 @@ import jogo.gameobject.GameObject;
 import jogo.util.Timer;
 
 public abstract class GameCharacter extends GameObject {
-    private float max_health = 10.0f;
+    private float max_health = 3.0f;
     private float health = 10.0f;
     private float damage = 1.1f;
     private final Timer attack_timer = new Timer(1.0f);

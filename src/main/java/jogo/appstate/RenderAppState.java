@@ -5,6 +5,8 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -94,8 +96,9 @@ public class RenderAppState extends BaseAppState {
             return g;
         } else if (obj instanceof NonPlayebleGameCharacter) {
             Spatial g = assetManager.loadModel("Models/bob.glb");
-            g.scale(0.2f);
-            g.rotate(0, (float)Math.PI / -2.0f, 0);
+            g.scale(0.16666f);
+            Quaternion rotation = new Quaternion().fromAngleAxis((float)(Math.PI), Vector3f.UNIT_Y);
+            g.setLocalRotation(rotation);
             return g;
 
         }

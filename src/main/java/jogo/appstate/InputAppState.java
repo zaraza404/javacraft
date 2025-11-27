@@ -49,6 +49,8 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         im.addMapping("Respawn", new KeyTrigger(KeyInput.KEY_R));
         // Interact (E)
         im.addMapping("Interact", new KeyTrigger(KeyInput.KEY_E));
+        // Inventory (I)
+        im.addMapping("Inventory", new KeyTrigger(KeyInput.KEY_I));
 
         im.addListener(this, "MoveForward", "MoveBackward", "MoveLeft", "MoveRight", "Jump", "Sprint", "ToggleMouse", "Break", "ToggleShading", "Respawn", "Interact");
         im.addListener(this, "MouseX+", "MouseX-", "MouseY+", "MouseY-");

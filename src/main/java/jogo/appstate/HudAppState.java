@@ -8,6 +8,8 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
+import jogo.gameinterface.Inventory;
+import jogo.gameinterface.InventoryItem;
 
 public class HudAppState extends BaseAppState {
 
@@ -25,6 +27,7 @@ public class HudAppState extends BaseAppState {
 
     @Override
     protected void initialize(Application app) {
+
         BitmapFont font = assetManager.loadFont("Interface/Fonts/Default.fnt");
 
         crosshair = new BitmapText(font, false);
@@ -41,6 +44,7 @@ public class HudAppState extends BaseAppState {
         positionHealthHUD();
 
         System.out.println("HudAppState initialized: crosshair attached");
+        displayInventory();
     }
 
     private void centerCrosshair() {
@@ -61,11 +65,37 @@ public class HudAppState extends BaseAppState {
         healthBarPicture.setLocalTranslation(x,y,0);
     }
 
+    public void displayInventory() {
+        SimpleApplication sapp = (SimpleApplication) getApplication();
+        Inventory inventory = player.inventory;
+        int x = sapp.getCamera().getWidth()/2;
+        int y = sapp.getCamera().getHeight()/2;
+        Picture inventoryBackground = new Picture("Inventory Background");
+        inventoryBackground.setImage(assetManager, "Textures/GameInterface/inventoryBackground.png", true);
+        inventoryBackground.setHeight(400f);
+        inventoryBackground.setWidth(400f);
+        guiNode.attachChild(inventoryBackground);
+        inventoryBackground.setPosition(500,200);
+
+        int i = 0;
+        for (InventoryItem item : inventory.getInventoryItems()){
+            Picture inventoryItem = new Picture("Inventory Item " + i);
+            inventoryItem.setImage(assetManager, item.getTexturePath(), true);
+            inventoryItem.setHeight(136f);
+            inventoryItem.setWidth(136f);
+            guiNode.attachChild(inventoryItem);
+            float[] item_offset = inventory.getItemIterfacePositionAt(i);
+            inventoryItem.setPosition(x + item_offset[0], y + item_offset[1]);
+            i++;
+        }
+    }
+
     @Override
     public void update(float tpf) {
         // keep centered (cheap)
         centerCrosshair();
         healthBarPicture.setWidth((player.getPlayer().getHealth() / player.getPlayer().getMaxHealth()) * 200f);
+
     }
 
     @Override

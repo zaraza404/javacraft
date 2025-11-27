@@ -12,6 +12,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import jogo.framework.math.Vec3;
+import jogo.gameinterface.ConsumableItem;
+import jogo.gameinterface.Inventory;
 import jogo.gameobject.character.Player;
 
 public class PlayerAppState extends BaseAppState {
@@ -27,15 +29,18 @@ public class PlayerAppState extends BaseAppState {
     private BetterCharacterControl characterControl;
     private Player player;
 
+    //TODO change from public
+    public Inventory inventory;
+
     // view angles
     private float yaw = 0f;
     private float pitch = 0f;
 
     // tuning
-    private float moveSpeed = 8.0f; // m/s
+    private float moveSpeed = 3.0f; // m/s
     private float sprintMultiplier = 1.7f;
     private float mouseSensitivity = 30f; // degrees per mouse analog unit
-    private float eyeHeight = 0.9f;
+    private float eyeHeight = 0.6f;
 
     private Vector3f spawnPosition = new Vector3f(25.5f, 12f, 25.5f);
     private PointLight playerLight;
@@ -47,6 +52,7 @@ public class PlayerAppState extends BaseAppState {
         this.input = input;
         this.physicsSpace = physicsSpace;
         this.world = world;
+        inventory = new Inventory();
         world.registerPlayerAppState(this);
     }
 
@@ -85,6 +91,12 @@ public class PlayerAppState extends BaseAppState {
         // Look slightly downward so ground is visible immediately
         this.pitch = -0.35f;
         applyViewToCamera();
+
+        //TODO remove - Testing
+        inventory.addItem(new ConsumableItem("potion", "Textures/GameInterface/potion.png"));
+        inventory.addItem(new ConsumableItem("potion", "Textures/GameInterface/potion.png"));
+        inventory.addItem(new ConsumableItem("potion", "Textures/GameInterface/sword" +
+                ".png"));
     }
 
     @Override

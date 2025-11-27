@@ -55,7 +55,7 @@ public class Chunk {
             if (i == VoxelPalette.AIR_ID) continue;
             MeshBuilder mb = new MeshBuilder();
             // Randomize UVs only for dirt to add variation without per-block materials
-            mb.setRandomizeUV(true);
+            mb.setRandomizeUV(false);
             builders.put((byte)i, mb);
         }
         // Track first block position for each type
