@@ -1,5 +1,6 @@
 package jogo;
 
+import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
@@ -28,9 +29,12 @@ public class Jogo extends SimpleApplication {
         settings.setTitle("Test");
         settings.setWidth(1280);
         settings.setHeight(720);
-        settings.setGammaCorrection(true); // enable sRGB gamma-correct rendering
+        settings.setGammaCorrection(true);// enable sRGB gamma-correct rendering
+        settings.setFullscreen(false);
         app.setSettings(settings);
         app.start();
+        app.getInputManager().getCursorPosition();
+
     }
 
     private BulletAppState bulletAppState;
@@ -96,6 +100,6 @@ public class Jogo extends SimpleApplication {
         }
 
 
-        stateManager.attach(new HudAppState(guiNode, assetManager,player));
+        stateManager.attach(new HudAppState(guiNode, assetManager,player,input));
     }
 }

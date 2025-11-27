@@ -1,6 +1,7 @@
 package jogo.appstate;
 
 import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -12,6 +13,8 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
+import java.awt.*;
+
 public class InputAppState extends BaseAppState implements ActionListener, AnalogListener {
 
     private boolean forward, backward, left, right;
@@ -21,8 +24,14 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
     private volatile boolean toggleShadingRequested;
     private volatile boolean respawnRequested;
     private volatile boolean interactRequested;
+
+    private volatile boolean selectRequested;
+    private volatile boolean useRequested;
+
+
     private float mouseDX, mouseDY;
     private boolean mouseCaptured = true;
+
 
     @Override
     protected void initialize(Application app) {
@@ -43,16 +52,21 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         im.addMapping("ToggleMouse", new KeyTrigger(KeyInput.KEY_TAB));
         // Break voxel (left mouse)
         im.addMapping("Break", new MouseButtonTrigger(com.jme3.input.MouseInput.BUTTON_LEFT));
+        // Interact (E)
+        im.addMapping("Interact", new MouseButtonTrigger(com.jme3.input.MouseInput.BUTTON_RIGHT));
         // Toggle shading (L)
         im.addMapping("ToggleShading", new KeyTrigger(KeyInput.KEY_L));
         // Respawn (R)
         im.addMapping("Respawn", new KeyTrigger(KeyInput.KEY_R));
         // Interact (E)
-        im.addMapping("Interact", new KeyTrigger(KeyInput.KEY_E));
-        // Inventory (I)
-        im.addMapping("Inventory", new KeyTrigger(KeyInput.KEY_I));
+        im.addMapping("Inventory", new KeyTrigger(KeyInput.KEY_E));
 
-        im.addListener(this, "MoveForward", "MoveBackward", "MoveLeft", "MoveRight", "Jump", "Sprint", "ToggleMouse", "Break", "ToggleShading", "Respawn", "Interact");
+        // UI mappings
+        im.addMapping("Select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        im.addMapping("Use", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+
+
+        im.addListener(this, "MoveForward", "MoveBackward", "MoveLeft", "MoveRight", "Jump", "Sprint", "ToggleMouse", "Break", "ToggleShading", "Respawn", "Interact", "Select", "Use");
         im.addListener(this, "MouseX+", "MouseX-", "MouseY+", "MouseY-");
     }
 
@@ -74,6 +88,8 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         im.deleteMapping("ToggleShading");
         im.deleteMapping("Respawn");
         im.deleteMapping("Interact");
+        im.deleteMapping("Select");
+        im.deleteMapping("Use");
         im.removeListener(this);
     }
 
@@ -111,6 +127,12 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
             case "Interact" -> {
                 if (isPressed && mouseCaptured) interactRequested = true;
             }
+            case "Select" -> {
+                if (isPressed) selectRequested = true;
+            }
+            case "Use" -> {
+                if (isPressed) useRequested = true;
+            }
         }
     }
 
@@ -123,6 +145,7 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
             case "MouseY+" -> mouseDY += value;
             case "MouseY-" -> mouseDY -= value;
         }
+
     }
 
     public Vector3f getMovementXZ() {
@@ -133,6 +156,10 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
 
     public boolean isSprinting() {
         return sprint;
+    }
+
+    public Vector2f getMousePosition(){
+        return getApplication().getInputManager().getCursorPosition();
     }
 
     public boolean consumeJumpRequested() {
@@ -165,6 +192,18 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         return r;
     }
 
+    public boolean consumeSelectRequested() {
+        boolean r = selectRequested;
+        selectRequested = false;
+        return r;
+    }
+
+    public boolean consumeUseRequested() {
+        boolean r = useRequested;
+        useRequested = false;
+        return r;
+    }
+
     public Vector2f consumeMouseDelta() {
         Vector2f d = new Vector2f(mouseDX, mouseDY);
         mouseDX = 0f;
@@ -172,9 +211,12 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         return d;
     }
 
+
+
     public void setMouseCaptured(boolean captured) {
         this.mouseCaptured = captured;
         var im = getApplication().getInputManager();
+
         im.setCursorVisible(!captured);
         // Clear accumulated deltas when switching state
         mouseDX = 0f;

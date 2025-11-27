@@ -163,7 +163,6 @@ public class WorldAppState extends BaseAppState {
                         }
                     } else {
                         control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
-                        System.out.println(npc.get_movement_vec3(tpf).get_angle());
                         control.setViewDirection(npc.get_movement_vec3(tpf).toVector3f());
                     }
 
