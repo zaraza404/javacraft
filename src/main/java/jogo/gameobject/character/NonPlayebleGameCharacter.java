@@ -16,14 +16,14 @@ public abstract class NonPlayebleGameCharacter extends GameCharacter {
         path = new ArrayList<>();
     }
 
-    public void move_to_vec3(Vec3 new_target_position){
+    public void moveToVec3(Vec3 new_target_position){
         this.target_position = new_target_position;
     }
 
-    public Vec3 get_movement_vec3(float tpf){
-        Vec3 xz_vec = position.vectorTo(target_position);
+    public Vec3 getMovementVec3(float tpf){
+        Vec3 xz_vec = position.getVectorTo(target_position);
         xz_vec.set(xz_vec.x, 0, xz_vec.z);
-        Vec3 dir = xz_vec.normalized();
+        Vec3 dir = xz_vec.getNormalized();
         dir = dir.scaleBy(speed * tpf);
         return dir;
     }

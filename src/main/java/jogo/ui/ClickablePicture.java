@@ -1,9 +1,6 @@
-package jogo.gameinterface;
+package jogo.ui;
 
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.scene.shape.Quad;
 import com.jme3.ui.Picture;
 
 public class ClickablePicture extends Picture {

@@ -4,32 +4,32 @@ import jogo.gameobject.GameObject;
 import jogo.util.Timer;
 
 public abstract class GameCharacter extends GameObject {
-    private float max_health = 3.0f;
-    private float health = 10.0f;
-    private float damage = 1.1f;
-    private final Timer attack_timer = new Timer(1.0f);
+    private float maxHealth = 3.0f;
+    private float health;
+    private float damage = 0.1f;
+    private float defence = 0f;
+    private final Timer attackTimer = new Timer(1.0f);
 
     protected GameCharacter(String name) {
         super(name);
-        health = max_health;
+        health = maxHealth;
     }
 
     // update function should be called each frame
     public void update(float tpf){
-        attack_timer.update(tpf);
+        attackTimer.update(tpf);
     }
 
     public void attack(GameCharacter target) {
-        if (attack_timer.isFinished()){
+        if (attackTimer.isFinished()){
             target.recieveDamage(this.damage);
-            attack_timer.start();
+            attackTimer.start();
         }
-
     }
 
-
-    public void recieveDamage(float damage) {
-        health -= damage;
+    public void recieveDamage(float dmg) {
+        float damage_dealt = Math.max(0.1f, dmg - defence);
+        health -= damage_dealt;
         if (health <= 0) {
             this.onDeath();
         }
@@ -39,11 +39,11 @@ public abstract class GameCharacter extends GameObject {
         return;
     }
 
-
+    public float getHealthPercentage() {return (this.health / this.maxHealth); }
     public float getHealth() { return this.health; }
     public void setHealth(float health) { this.health = health; }
-    public float getMaxHealth() { return this.max_health; }
-    public void setMaxHealth(float max_health) { this.max_health = max_health; }
+    public float getMaxHealth() { return this.maxHealth; }
+    public void setMaxHealth(float maxHealth) { this.maxHealth = maxHealth; }
     public float getDamage() { return this.damage; }
     public void setDamage(float damage) { this.damage = damage; }
 

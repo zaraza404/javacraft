@@ -12,9 +12,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import jogo.framework.math.Vec3;
-import jogo.gameinterface.ConsumableItem;
-import jogo.gameinterface.Inventory;
+import jogo.systems.StatType;
+import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
+import jogo.systems.inventory.Inventory;
 import jogo.gameobject.character.Player;
+import jogo.systems.inventoryitem.equipmentitem.weapon.Hammer;
+import jogo.systems.inventoryitem.equipmentitem.weapon.ShortSword;
 
 public class PlayerAppState extends BaseAppState {
 
@@ -52,7 +55,7 @@ public class PlayerAppState extends BaseAppState {
         this.input = input;
         this.physicsSpace = physicsSpace;
         this.world = world;
-        inventory = new Inventory();
+        inventory = new Inventory(12);
         world.registerPlayerAppState(this);
     }
 
@@ -68,7 +71,6 @@ public class PlayerAppState extends BaseAppState {
 
         // Engine-neutral player entity (no engine visuals here)
         player = new Player();
-
 
         // BetterCharacterControl(radius, height, mass)
         characterControl = new BetterCharacterControl(0.42f, 1.8f, 80f);
@@ -93,10 +95,13 @@ public class PlayerAppState extends BaseAppState {
         applyViewToCamera();
 
         //TODO remove - Testing
-        inventory.addItem(new ConsumableItem("potion", "Textures/GameInterface/potion.png"));
-        inventory.addItem(new ConsumableItem("potion", "Textures/GameInterface/potion.png"));
-        inventory.addItem(new ConsumableItem("potion", "Textures/GameInterface/sword" +
-                ".png"));
+        inventory.addItem(new ConsumableItem("potion", "Textures/items/m_health_potion.png"));
+        inventory.addItem(new ConsumableItem("potion", "Textures/items/m_health_potion.png"));
+        inventory.addItem(new ShortSword());
+        inventory.addItem(new ConsumableItem("potion", "Textures/items/m_health_potion.png"));
+        inventory.addItem(new ShortSword());
+        inventory.addItem(new Hammer());
+
     }
 
     @Override
@@ -175,6 +180,10 @@ public class PlayerAppState extends BaseAppState {
         Vector3f loc = playerNode.getWorldTranslation().add(0, eyeHeight, 0);
         cam.setLocation(loc);
         cam.setRotation(new com.jme3.math.Quaternion().fromAngles(pitch, yaw, 0f));
+    }
+
+    public void updateStats() {
+        player.setDamage(inventory.getStat(StatType.DAMAGE));
     }
 
     @Override

@@ -97,7 +97,6 @@ public class WorldAppState extends BaseAppState {
         spatial.addControl(npcControl);
         npcControls.put(npc, npcControl);
         npcControl.warp(npc.getPosition().toVector3f());
-
     }
 
     public VoxelWorld getVoxelWorld() {
@@ -108,7 +107,7 @@ public class WorldAppState extends BaseAppState {
         ArrayList<Vec3> path = pathfinding.BuildPath(from, to, voxelWorld.getWalkable(from));
         ArrayList<Vec3> path_centered = new ArrayList<>();
         for (Vec3 pos:path){
-            path_centered.add(pos.add_vec3(new Vec3(0.5f,0.1f,0.5f)));
+            path_centered.add(pos.addVec3(new Vec3(0.5f,0.1f,0.5f)));
         }
         return path_centered;
     }
@@ -148,36 +147,30 @@ public class WorldAppState extends BaseAppState {
                     if (control == null){
                         continue;
                     }
+
                     npc.setPosition(new Vec3(control.getSpatial().getWorldTranslation()));
-                    if (npc.getPosition().xzDistanceTo(getPlayerPosition()) < 1f){
+
+                    if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 1f){
                         //npc.attack(playerAppState.getPlayer());
                     }
 
-                    if (npc.getPosition().xzDistanceTo(npc.getTargetPosition()) < 0.2f) {//returns the same value all the time
+                    if (npc.getPosition().getXZDistanceTo(npc.getTargetPosition()) < 0.2f) {//returns the same value all the time
                         control.setWalkDirection(Vector3f.ZERO);
                         npc.decision(this);
-                        control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
+                        control.setWalkDirection(npc.getMovementVec3(tpf).toVector3f());
                         npc.onArrivedAtPos();
                         if (npc.getPath().isEmpty()) {
                             npc.decision(this);
                         }
                     } else {
-                        control.setWalkDirection(npc.get_movement_vec3(tpf).toVector3f());
-                        control.setViewDirection(npc.get_movement_vec3(tpf).toVector3f());
+                        control.setWalkDirection(npc.getMovementVec3(tpf).toVector3f());
+                        control.setViewDirection(npc.getMovementVec3(tpf).toVector3f());
                     }
-
                 }
             }
-
         }
-        for(NonPlayebleGameCharacter npc : npcControls.keySet() ){
-
-
-
-
-
+        for (NonPlayebleGameCharacter npc : npcControls.keySet() ){
         }
-
     }
 
     @Override

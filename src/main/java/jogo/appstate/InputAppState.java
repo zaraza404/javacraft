@@ -25,6 +25,7 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
     private volatile boolean respawnRequested;
     private volatile boolean interactRequested;
 
+    private volatile boolean inventoryRequested;
     private volatile boolean selectRequested;
     private volatile boolean useRequested;
 
@@ -43,13 +44,16 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         im.addMapping("MoveRight", new KeyTrigger(KeyInput.KEY_D));
         im.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         im.addMapping("Sprint", new KeyTrigger(KeyInput.KEY_LSHIFT));
+
         // Mouse look
         im.addMapping("MouseX+", new MouseAxisTrigger(MouseInput.AXIS_X, false));
         im.addMapping("MouseX-", new MouseAxisTrigger(MouseInput.AXIS_X, true));
         im.addMapping("MouseY+", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
         im.addMapping("MouseY-", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+
         // Toggle capture (use TAB, ESC exits app by default)
         im.addMapping("ToggleMouse", new KeyTrigger(KeyInput.KEY_TAB));
+
         // Break voxel (left mouse)
         im.addMapping("Break", new MouseButtonTrigger(com.jme3.input.MouseInput.BUTTON_LEFT));
         // Interact (E)
@@ -58,15 +62,20 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         im.addMapping("ToggleShading", new KeyTrigger(KeyInput.KEY_L));
         // Respawn (R)
         im.addMapping("Respawn", new KeyTrigger(KeyInput.KEY_R));
-        // Interact (E)
-        im.addMapping("Inventory", new KeyTrigger(KeyInput.KEY_E));
+
 
         // UI mappings
+
+        // Inventory (E)
+        im.addMapping("Inventory", new KeyTrigger(KeyInput.KEY_E));
+
+        // Select
         im.addMapping("Select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        // Use
         im.addMapping("Use", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
 
-        im.addListener(this, "MoveForward", "MoveBackward", "MoveLeft", "MoveRight", "Jump", "Sprint", "ToggleMouse", "Break", "ToggleShading", "Respawn", "Interact", "Select", "Use");
+        im.addListener(this, "MoveForward", "MoveBackward", "MoveLeft", "MoveRight", "Jump", "Sprint", "ToggleMouse", "Break", "ToggleShading", "Respawn", "Interact", "Inventory", "Select", "Use");
         im.addListener(this, "MouseX+", "MouseX-", "MouseY+", "MouseY-");
     }
 
@@ -87,6 +96,7 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         im.deleteMapping("Break");
         im.deleteMapping("ToggleShading");
         im.deleteMapping("Respawn");
+        im.deleteMapping("Inventory");
         im.deleteMapping("Interact");
         im.deleteMapping("Select");
         im.deleteMapping("Use");
@@ -123,6 +133,9 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
             }
             case "Respawn" -> {
                 if (isPressed) respawnRequested = true;
+            }
+            case "Inventory" -> {
+                if (isPressed) inventoryRequested = true;
             }
             case "Interact" -> {
                 if (isPressed && mouseCaptured) interactRequested = true;
@@ -191,6 +204,13 @@ public class InputAppState extends BaseAppState implements ActionListener, Analo
         interactRequested = false;
         return r;
     }
+
+    public boolean consumeInventoryRequested() {
+        boolean r = inventoryRequested;
+        inventoryRequested = false;
+        return r;
+    }
+
 
     public boolean consumeSelectRequested() {
         boolean r = selectRequested;

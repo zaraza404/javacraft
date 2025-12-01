@@ -1,23 +1,23 @@
 package jogo.util;
 
 public class Timer {
-    private float wait_time;
-    private float time_left;
+    private float waitTime;
+    private float timeLeft;
     private boolean paused = false;
     private boolean finished = true;
 
-    public Timer(float wait_time){
-        this.wait_time = wait_time;
-        this.time_left = this.wait_time;
+    public Timer(float waitTime){
+        this.waitTime = waitTime;
+        this.timeLeft = this.waitTime;
     }
 
-    public void setWaitTime(float wait_time) {
-        this.wait_time = wait_time;
-        this.time_left = this.wait_time;
+    public void setWaitTime(float waitTime) {
+        this.waitTime = waitTime;
+        this.timeLeft = this.waitTime;
     }
 
     public void start(){
-        this.time_left = wait_time;
+        this.timeLeft = waitTime;
         this.finished = false;
         this.paused = false;
     }
@@ -31,9 +31,9 @@ public class Timer {
             return;
         }
 
-        this.time_left -= tpf;
-        System.out.println(this.time_left);
-        if (time_left <= 0){
+        this.timeLeft -= tpf;
+        System.out.println(this.timeLeft);
+        if (timeLeft <= 0){
             this.finished = true;
         }
 
