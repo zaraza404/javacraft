@@ -12,10 +12,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import jogo.framework.math.Vec3;
+import jogo.gameobject.character.GameCharacter;
 import jogo.systems.StatType;
 import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
 import jogo.systems.inventory.Inventory;
 import jogo.gameobject.character.Player;
+import jogo.systems.inventoryitem.consumableitem.food.BerriesItem;
 import jogo.systems.inventoryitem.equipmentitem.weapon.Hammer;
 import jogo.systems.inventoryitem.equipmentitem.weapon.ShortSword;
 
@@ -95,10 +97,10 @@ public class PlayerAppState extends BaseAppState {
         applyViewToCamera();
 
         //TODO remove - Testing
-        inventory.addItem(new ConsumableItem("potion", "Textures/items/m_health_potion.png"));
-        inventory.addItem(new ConsumableItem("potion", "Textures/items/m_health_potion.png"));
+        inventory.addItem(new BerriesItem());
+        inventory.addItem(new BerriesItem());
         inventory.addItem(new ShortSword());
-        inventory.addItem(new ConsumableItem("potion", "Textures/items/m_health_potion.png"));
+        inventory.addItem(new BerriesItem());
         inventory.addItem(new ShortSword());
         inventory.addItem(new Hammer());
 
@@ -184,6 +186,10 @@ public class PlayerAppState extends BaseAppState {
 
     public void updateStats() {
         player.setDamage(inventory.getStat(StatType.DAMAGE));
+    }
+
+    public void useItem(ConsumableItem item, GameCharacter target){
+        inventory.useItem(item, target);
     }
 
     @Override

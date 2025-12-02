@@ -1,8 +1,10 @@
 package jogo.systems.inventory;
 
+import jogo.gameobject.character.GameCharacter;
 import jogo.systems.StatType;
 import jogo.systems.inventoryitem.ItemType;
 import jogo.systems.inventoryitem.InventoryItem;
+import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
 import jogo.systems.inventoryitem.equipmentitem.EquipmentItem;
 
 public class Inventory {
@@ -17,6 +19,15 @@ public class Inventory {
         inventoryItems = new InventoryItem[size];
         inventoryItemsCount = new int[size];
         this.size = size;
+    }
+
+    public void useItem(ConsumableItem item, GameCharacter target){
+        item.use(target);
+        for (int i = 0; i < inventoryItems.length; i++) {
+            if (inventoryItems[i] == item){
+                removeInventoryItemAt(i);
+            }
+        }
     }
 
     public boolean addItem(InventoryItem newItem){
@@ -87,6 +98,15 @@ public class Inventory {
         }
         return false;
     }
+
+    public InventoryItem getInventoryItem(int pos){
+        return inventoryItems[pos];
+    }
+
+    public InventoryItem getEquipmentItem(int pos){
+        return equipmentItems[pos];
+    }
+
 
     public int getItemPos(InventoryItem item){
         for (int i = 0; i < inventoryItems.length; i++) {

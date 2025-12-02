@@ -11,7 +11,7 @@ import jogo.appstate.PlayerAppState;
 public class OverlayUI extends UserInterface{
     Picture healthBarFill;
     Picture crosshsair;
-    Vector2f healthBarDim = new Vector2f(200f, 200f);
+    Vector2f healthBarDim = new Vector2f(512f, 128f);
     public OverlayUI(AssetManager assetManager, HudAppState hud, InputAppState input, PlayerAppState player){
         super("Overlay",assetManager,hud,input,player);
         input.setMouseCaptured(true);
@@ -29,13 +29,21 @@ public class OverlayUI extends UserInterface{
         crosshair.setWidth(64f);
         crosshair.setHeight(64f);
         attachChild(crosshair);
-        crosshair.setPosition(x,y);
+        crosshair.setPosition(x-32f,y-32f);
 
-        healthBarFill = new Picture("Health Picture");
-        healthBarFill.setImage(assetManager, "Textures/CharacterBanners/gabe.png", true);
-        healthBarFill.setLocalScale(200, 50, 0);
+        Picture healthBarUnder = new Picture("Health Under Picture");
+        healthBarUnder.setImage(assetManager, "Interface/healthbar_under.png", true);
+        healthBarUnder.setHeight(healthBarDim.y);
+        healthBarUnder.setWidth(healthBarDim.x+128);
+        attachChild(healthBarUnder);
+        healthBarUnder.setPosition((x - (healthBarDim.x+128)/2f),600f);
+
+        healthBarFill = new Picture("Health Fill Picture");
+        healthBarFill.setImage(assetManager, "Interface/healthbar_fill.png", true);
+        healthBarFill.setHeight(healthBarDim.y);
+        healthBarFill.setWidth(healthBarDim.x);
         attachChild(healthBarFill);
-        healthBarFill.setPosition((x - healthBarDim.x/2f),(y + healthBarDim.y/2f));
+        healthBarFill.setPosition(x - (healthBarDim.x/2f),600f);
 
 
     }

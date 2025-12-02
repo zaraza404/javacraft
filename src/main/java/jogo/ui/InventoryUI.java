@@ -9,6 +9,8 @@ import jogo.appstate.InputAppState;
 import jogo.appstate.PlayerAppState;
 import jogo.systems.inventory.Inventory;
 import jogo.systems.inventoryitem.InventoryItem;
+import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
+import jogo.systems.inventoryitem.equipmentitem.EquipmentItem;
 
 public class InventoryUI extends UserInterface{
 
@@ -26,6 +28,8 @@ public class InventoryUI extends UserInterface{
     private float slotSize = 80f;
     private float slotMargine = 8f;
 
+    private Inventory inventory;
+
     public InventoryUI(AssetManager assetManager, HudAppState hud, InputAppState input, PlayerAppState player){
         super("Inventory",assetManager,hud,input,player);
         input.setMouseCaptured(false);
@@ -37,7 +41,7 @@ public class InventoryUI extends UserInterface{
         int x = sapp.getCamera().getWidth()/2;
         int y = sapp.getCamera().getHeight()/2;
 
-        Inventory inventory = player.inventory;
+        inventory = player.inventory;
         inventoryIcons = new ClickablePicture[inventory.getInventoryItems().length];
         inventorySlots = new ClickablePicture[inventory.getInventoryItems().length];
 
@@ -124,6 +128,35 @@ public class InventoryUI extends UserInterface{
             draggedIcon.setPosition(mouse_pos.x - draggedIcon.getWidth()/2f, mouse_pos.y - draggedIcon.getHeight()/2f);
         }
 
+        if (input.consumeUseRequested()){
+            for (int i = 0; i < inventoryIcons.length; i++){
+                if (inventoryIcons[i] == null){
+                    continue;
+                }
+                if (!inventoryIcons[i].checkClick(mouse_pos)){
+                    continue;
+                }
+
+                InventoryItem item = inventory.getInventoryItem(i);
+                if (item!= null){
+                    if (item instanceof EquipmentItem){
+                        for (int j = 0; j < equipmentSlots.length; j++){
+                            if (inventory.equipItem(i, j)){
+                                equipItem(i,j);
+                                break;
+                            }
+                        }
+                    }
+                    else if (item instanceof ConsumableItem){
+                        player.useItem((ConsumableItem) item, player.getPlayer());
+                        detachChild(inventoryIcons[i]);
+                        inventoryIcons[i] = null;
+
+                    }
+                }
+            }
+        }
+
         if (input.consumeSelectRequested()){
             if (draggedIcon == null) {
                 //dragging from inventory
@@ -177,22 +210,16 @@ public class InventoryUI extends UserInterface{
 
                     //put into inventory from equipment
                     if (!isDraggedfromInventory) {
-                        if (player.inventory.unequipItem(draggedId, target_invenory_slot)) {
+                        if (inventory.unequipItem(draggedId, target_invenory_slot)) {
 
-                            ClickablePicture target_icon = inventoryIcons[target_invenory_slot];
-
-                            inventoryIcons[target_invenory_slot] = draggedIcon;
-                            equipmentIcons[draggedId] = target_icon;
-
-                            snapToSlot(draggedIcon, inventorySlots[target_invenory_slot]);
-                            snapToSlot(target_icon, equipmentSlots[draggedId]);
+                            equipItem(target_invenory_slot,draggedId);
                             is_icon_moved = true;
                         }
                     }
 
                     //put into inventory from inventory
                     else {
-                        player.inventory.moveItem(draggedId,target_invenory_slot);
+                        inventory.moveItem(draggedId,target_invenory_slot);
 
                         ClickablePicture target_icon = inventoryIcons[target_invenory_slot];
 
@@ -210,15 +237,16 @@ public class InventoryUI extends UserInterface{
 
                 else if (target_equipment_slot != -1) {
                     if (isDraggedfromInventory) {
-                        if(player.inventory.equipItem(draggedId, target_equipment_slot)){
-                            ClickablePicture target_icon = equipmentIcons[target_equipment_slot];
+                        if(inventory.equipItem(draggedId, target_equipment_slot)){
+                            equipItem(draggedId,target_equipment_slot);
+                            /*ClickablePicture target_icon = equipmentIcons[target_equipment_slot];
 
                             equipmentIcons[target_equipment_slot] = draggedIcon;
                             inventoryIcons[draggedId] = target_icon;
 
                             snapToSlot(draggedIcon, equipmentSlots[target_equipment_slot]);
                             snapToSlot(target_icon, inventorySlots[draggedId]);
-
+*/
                             is_icon_moved = true;
                         }
                     }
@@ -234,6 +262,23 @@ public class InventoryUI extends UserInterface{
 
             }
         }
+    }
+
+    private void equipItem(int inventoryPos, int equipmentPos){
+        ClickablePicture equipmentIcon = equipmentIcons[equipmentPos];
+        ClickablePicture inventoryIcon = inventoryIcons[inventoryPos];
+
+        equipmentIcons[equipmentPos] = inventoryIcon;
+        inventoryIcons[inventoryPos] = equipmentIcon;
+
+        if (equipmentIcon != null) {
+            snapToSlot(equipmentIcon, inventorySlots[inventoryPos]);
+        }
+
+        if (inventoryIcon != null) {
+            snapToSlot(inventoryIcon, equipmentSlots[equipmentPos]);
+        }
+
     }
 
     private void snapToSlot(ClickablePicture draggable, ClickablePicture slot){

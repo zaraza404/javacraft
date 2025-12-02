@@ -6,7 +6,7 @@ import jogo.systems.inventoryitem.InventoryItem;
 
 import java.util.HashMap;
 
-public class EquipmentItem extends InventoryItem {
+public abstract class EquipmentItem extends InventoryItem {
     protected HashMap<StatType, Float> stats;
 
     public EquipmentItem(String item_name, String texture_path, ItemType item_type){

@@ -151,7 +151,7 @@ public class WorldAppState extends BaseAppState {
                     npc.setPosition(new Vec3(control.getSpatial().getWorldTranslation()));
 
                     if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 1f){
-                        //npc.attack(playerAppState.getPlayer());
+                        npc.attack(playerAppState.getPlayer());
                     }
 
                     if (npc.getPosition().getXZDistanceTo(npc.getTargetPosition()) < 0.2f) {//returns the same value all the time
