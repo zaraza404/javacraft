@@ -3,6 +3,7 @@ package jogo.appstate;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -16,6 +17,7 @@ import com.jme3.scene.shape.Sphere;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
 import jogo.gameobject.GameObject;
+import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.character.NonPlayebleGameCharacter;
 import jogo.gameobject.character.Player;
 import jogo.gameobject.item.Item;
@@ -53,13 +55,23 @@ public class RenderAppState extends BaseAppState {
     @Override
     public void update(float tpf) {
         // Ensure each registered object has a spatial and sync position
+        var toRemove = registry.getAllToRemove();
+
+        for (GameObject obj : toRemove) {
+            Spatial s = instances.get(obj);
+            if (s!=null){
+                world.removeNonPlayableCharacterControl((NonPlayebleGameCharacter) obj, s);
+                s.removeFromParent();
+            }
+            registry.completeRemove(obj);
+        }
         var current = registry.getAll();
         Set<GameObject> alive = new HashSet<>(current);
 
         for (GameObject obj : current) {
             Spatial s = instances.get(obj);
             if (s == null) {
-                s = createSpatialFor(obj);
+                s = obj.getSpatial(assetManager);
                 if (s != null) {
                     gameNode.attachChild(s);
                     instances.put(obj, s);
@@ -69,7 +81,11 @@ public class RenderAppState extends BaseAppState {
                     }
                 }
             }
+            if (!(obj instanceof GameCharacter)){
+                s.setLocalTranslation(obj.getPosition().x, obj.getPosition().y, obj.getPosition().z);
+            }
         }
+        //TODO delete code if turns out it is useless
 
         // Cleanup: remove spatials for objects no longer in registry
         var it = instances.entrySet().iterator();
@@ -82,27 +98,6 @@ public class RenderAppState extends BaseAppState {
                 it.remove();
             }
         }
-    }
-
-    private Spatial createSpatialFor(GameObject obj) {
-        //TODO This could be set inside each GameObject!
-        if (obj instanceof Player) {
-            Geometry g = new Geometry(obj.getName(), new Cylinder(16, 16, 0.35f, 1.4f, true));
-            g.setMaterial(colored(ColorRGBA.Green));
-            return g;
-        } else if (obj instanceof Item) {
-            Geometry g = new Geometry(obj.getName(), new Box(0.3f, 0.3f, 0.3f));
-            g.setMaterial(colored(ColorRGBA.Yellow));
-            return g;
-        } else if (obj instanceof NonPlayebleGameCharacter) {
-            Spatial g = assetManager.loadModel("Models/bob.glb");
-            g.scale(0.16666f);
-            Quaternion rotation = new Quaternion().fromAngleAxis((float)(Math.PI), Vector3f.UNIT_Y);
-            g.setLocalRotation(rotation);
-            return g;
-
-        }
-        return null;
     }
 
     private Material colored(ColorRGBA color) {

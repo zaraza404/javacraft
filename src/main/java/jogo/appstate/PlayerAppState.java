@@ -18,8 +18,8 @@ import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
 import jogo.systems.inventory.Inventory;
 import jogo.gameobject.character.Player;
 import jogo.systems.inventoryitem.consumableitem.food.BerriesItem;
-import jogo.systems.inventoryitem.equipmentitem.weapon.Hammer;
-import jogo.systems.inventoryitem.equipmentitem.weapon.ShortSword;
+import jogo.systems.inventoryitem.equipmentitem.weapon.HammerItem;
+import jogo.systems.inventoryitem.equipmentitem.weapon.SwordItem;
 
 public class PlayerAppState extends BaseAppState {
 
@@ -99,10 +99,10 @@ public class PlayerAppState extends BaseAppState {
         //TODO remove - Testing
         inventory.addItem(new BerriesItem());
         inventory.addItem(new BerriesItem());
-        inventory.addItem(new ShortSword());
+        inventory.addItem(new SwordItem());
         inventory.addItem(new BerriesItem());
-        inventory.addItem(new ShortSword());
-        inventory.addItem(new Hammer());
+        inventory.addItem(new SwordItem());
+        inventory.addItem(new HammerItem());
 
     }
 

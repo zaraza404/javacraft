@@ -18,9 +18,11 @@ import jogo.framework.math.Vec3;
 import jogo.gameobject.GameObject;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.character.NonPlayebleGameCharacter;
+import jogo.gameobject.item.PickableItem;
 import jogo.util.pathfinding.Pathfinding;
 import jogo.voxel.VoxelWorld;
 
+import javax.naming.ldap.Control;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -99,6 +101,13 @@ public class WorldAppState extends BaseAppState {
         npcControl.warp(npc.getPosition().toVector3f());
     }
 
+    public void removeNonPlayableCharacterControl(NonPlayebleGameCharacter npc, Spatial spatial){
+        BetterCharacterControl npcControl = npcControls.get(npc);
+        physicsSpace.remove(npcControl);
+        spatial.removeControl(npcControl);
+        npcControls.remove(npc);
+    }
+
     public VoxelWorld getVoxelWorld() {
         return voxelWorld;
     }
@@ -138,7 +147,7 @@ public class WorldAppState extends BaseAppState {
                 chr.update(tpf);
                 if (chr instanceof NonPlayebleGameCharacter npc){
                     if (npc.getHealth() <= 0.0f) {
-                        registry.remove(npc);
+                        registry.startRemove(npc);
                         continue;
                     }
 
@@ -167,6 +176,8 @@ public class WorldAppState extends BaseAppState {
                         control.setViewDirection(npc.getMovementVec3(tpf).toVector3f());
                     }
                 }
+            } else if (obj instanceof PickableItem itm) {
+
             }
         }
         for (NonPlayebleGameCharacter npc : npcControls.keySet() ){

@@ -13,6 +13,7 @@ import jogo.gameobject.GameObject;
 import jogo.gameobject.character.EnemyGameCharacter;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.item.Item;
+import jogo.gameobject.item.PickableItem;
 import jogo.voxel.VoxelWorld;
 
 public class InteractionAppState extends BaseAppState {
@@ -58,8 +59,8 @@ public class InteractionAppState extends BaseAppState {
                 player.getPlayer().attack((GameCharacter) obj);
                 return;
             }
-            if (obj instanceof Item item) {
-                item.onInteract();
+            if (obj instanceof PickableItem pickableItem) {
+                player.inventory.addItem(pickableItem.pickUp());
                 System.out.println("Interacted with item: " + obj.getName());
                 return; // prefer item interaction if both are hit
             }

@@ -1,6 +1,12 @@
 package jogo.gameobject;
 
+import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Cylinder;
+import com.jme3.scene.shape.Quad;
 import jogo.framework.math.Vec3;
 
 /**
@@ -31,10 +37,9 @@ public abstract class GameObject {
         this.position.set(x, y, z);
     }
 
-    /*public Spatial getSpatial(){
-        Quad quad = new Quad(10,10);
-        Geometry obj_visual = new Geometry(getName(), quad);
-        obj_visual.setMaterial(new Material().setTexture(assetManager.load_texture("Textures/CharacterBanners/gabe.png"));
-        return obj_visual;
-    }*/
+    public Spatial getSpatial(AssetManager assetManager){
+        Geometry g = new Geometry(getName(), new Cylinder(16, 16, 0.35f, 1.4f, true));
+        g.setMaterial(new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"));
+        return g;
+    }
 }

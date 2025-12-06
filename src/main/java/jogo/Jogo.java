@@ -16,6 +16,9 @@ import jogo.appstate.InteractionAppState;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
 import jogo.gameobject.character.EnemyGameCharacter;
+import jogo.gameobject.item.PickableItem;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Main application entry.
@@ -79,8 +82,24 @@ public class Jogo extends SimpleApplication {
         stateManager.attach(player);
 
         EnemyGameCharacter enemy = new EnemyGameCharacter("RedBall");
-        enemy.setPosition(2.1f, 1.1f, 2.1f);
+        enemy.setPosition(7.1f, 1.1f, 7.1f);
         registry.add(enemy);
+
+        try {
+            PickableItem item = new PickableItem((byte) 1);
+            item.setPosition(2.1f, 1.1f, 2.1f);
+            registry.add(item);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         // Post-processing: SSAO for subtle contact shadows
         try {
