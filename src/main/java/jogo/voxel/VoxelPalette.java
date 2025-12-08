@@ -1,8 +1,6 @@
 package jogo.voxel;
 
-import jogo.voxel.blocks.AirBlockType;
-import jogo.voxel.blocks.StoneBlockType;
-import jogo.voxel.blocks.StoneWallBlockType;
+import jogo.voxel.blocks.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +28,8 @@ public class VoxelPalette {
         p.register(new AirBlockType());   // id 0
         p.register(new StoneBlockType()); // id 1
         p.register(new StoneWallBlockType());// id 2
+        p.register(new StoneFloorBlockType());   // id 3
+        p.register(new CrackedStoneWallBlockType()); // id 4
         return p;
     }
 

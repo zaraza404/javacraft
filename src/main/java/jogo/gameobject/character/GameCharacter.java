@@ -30,7 +30,6 @@ public abstract class GameCharacter extends GameObject {
 
     public void attack(GameCharacter target) {
         if (attackTimer.isFinished()){
-            System.out.println(this.damage);
             target.recieveDamage(this.damage);
             attackTimer.start();
         }

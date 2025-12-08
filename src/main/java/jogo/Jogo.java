@@ -1,6 +1,5 @@
 package jogo;
 
-import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
@@ -15,8 +14,11 @@ import jogo.appstate.RenderAppState;
 import jogo.appstate.InteractionAppState;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
+import jogo.framework.math.Vec3;
 import jogo.gameobject.character.EnemyGameCharacter;
-import jogo.gameobject.item.PickableItem;
+import jogo.gameobject.object.PickableItem;
+import jogo.gameobject.object.Spikes;
+import jogo.gameobject.GameObjectSpawner;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -62,7 +64,6 @@ public class Jogo extends SimpleApplication {
         // Engine registry and render layers
         GameRegistry registry = new GameRegistry();
         RenderIndex renderIndex = new RenderIndex();
-
         WorldAppState world = new WorldAppState(rootNode, assetManager, registry, physicsSpace, cam, input);
         stateManager.attach(world);
 
@@ -71,6 +72,8 @@ public class Jogo extends SimpleApplication {
         PlayerAppState player = new PlayerAppState(rootNode, assetManager, cam, input, physicsSpace, world);
 
         stateManager.attach(new InteractionAppState(rootNode, cam, input, renderIndex, world, player));
+
+        GameObjectSpawner spawner = GameObjectSpawner.getInstance(registry);
 
 
         // Demo objects
@@ -82,12 +85,12 @@ public class Jogo extends SimpleApplication {
         stateManager.attach(player);
 
         EnemyGameCharacter enemy = new EnemyGameCharacter("RedBall");
-        enemy.setPosition(7.1f, 1.1f, 7.1f);
+        enemy.setPosition(7.1f, 4.0f, 7.1f);
         registry.add(enemy);
 
         try {
-            PickableItem item = new PickableItem((byte) 1);
-            item.setPosition(2.1f, 1.1f, 2.1f);
+            PickableItem item = new PickableItem((byte) 0);
+            item.setPosition(2.1f, 4.0f, 2.1f);
             registry.add(item);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);

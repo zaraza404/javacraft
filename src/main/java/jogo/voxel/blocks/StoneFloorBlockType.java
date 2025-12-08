@@ -8,8 +8,8 @@ import jogo.util.ProcTextures;
 import jogo.voxel.TexturedVoxelBlockType;
 import jogo.voxel.VoxelBlockType;
 
-public class StoneWallBlockType extends TexturedVoxelBlockType {
-    public StoneWallBlockType() {
-        super("stone_wall", "Textures/blocks/stone_wall.png");
+public class StoneFloorBlockType extends TexturedVoxelBlockType {
+    public StoneFloorBlockType() {
+        super("stone_floor","Textures/blocks/stone_floor.png");
     }
 }

@@ -91,7 +91,6 @@ public class InventoryUI extends UserInterface{
 
         for (int i = 0; i < equipmentIcons.length; i++){
             InventoryItem item = inventory.getEquipmentItems()[i];
-            System.out.println(item);
             if (item == null) {
                 continue;
             }

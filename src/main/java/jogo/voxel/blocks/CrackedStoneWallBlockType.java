@@ -8,8 +8,10 @@ import jogo.util.ProcTextures;
 import jogo.voxel.TexturedVoxelBlockType;
 import jogo.voxel.VoxelBlockType;
 
-public class StoneWallBlockType extends TexturedVoxelBlockType {
-    public StoneWallBlockType() {
-        super("stone_wall", "Textures/blocks/stone_wall.png");
+public class CrackedStoneWallBlockType extends TexturedVoxelBlockType {
+    public CrackedStoneWallBlockType() {
+        super("cracked_stone_wall","Textures/blocks/cracked_stone_wall.png");
+        this.breakable = true;
     }
+
 }

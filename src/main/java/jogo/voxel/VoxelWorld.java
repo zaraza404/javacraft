@@ -11,6 +11,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture2D;
 import jogo.framework.math.Vec3;
+import jogo.gameobject.GameObjectSpawner;
 import jogo.util.Hit;
 import jogo.util.ProcTextures;
 import jogo.util.pathfinding.Pathfinding;
@@ -102,6 +103,7 @@ public class VoxelWorld {
 
     public boolean breakAt(int x, int y, int z) {
         if (!inBounds(x,y,z)) return false;
+        if (!palette.get(getBlock(x,y,z)).isBreakable()) return false;
         setBlock(x, y, z, VoxelPalette.AIR_ID);
         return true;
     }
@@ -112,16 +114,17 @@ public class VoxelWorld {
     public void generateLayers() {
         LevelMap level = new LevelMap("level1");
         byte[][][] level_block_layout= level.getMapBlockLayout();
-
-        for (int z = 0; z < 16; z++) {
-            for (int x = 0; x < 16; x++) {
-                for (int y = 0; y < 6; y++) {
+        int[] level_dim = level.getDimensions();
+        for (int z = 0; z < level_dim[1]; z++) {
+            for (int x = 0; x < level_dim[0]; x++) {
+                for (int y = 0; y < 7; y++) {
                     setBlock(x,y,z,level_block_layout[x][z][y]);
                 }
             }
         }
         Vector3i pos = new Vector3i(getRecommendedSpawn());
 
+        GameObjectSpawner.getInstance().SpawnObjects(level.getGameObjectsLayout());
 
     }
 
@@ -137,7 +140,7 @@ public class VoxelWorld {
 
 
 
-        return new Vector3f(2.1f, 1.5f, 2.1f);
+        return new Vector3f(2.1f, 5.0f, 2.1f);
         /*int cx = sizeX / 2;
         int cz = sizeZ / 2;
         int ty = getTopSolidY(cx, cz);

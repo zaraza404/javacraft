@@ -32,7 +32,6 @@ public class Timer {
         }
 
         this.timeLeft -= tpf;
-        System.out.println(this.timeLeft);
         if (timeLeft <= 0){
             this.finished = true;
         }

@@ -3,24 +3,21 @@ package jogo.appstate;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
-import com.jme3.scene.shape.Sphere;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
+import jogo.framework.math.Vec3;
 import jogo.gameobject.GameObject;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.character.NonPlayebleGameCharacter;
-import jogo.gameobject.character.Player;
-import jogo.gameobject.item.Item;
+import jogo.gameobject.object.LightSource;
+import jogo.gameobject.object.PickableItem;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,14 +54,6 @@ public class RenderAppState extends BaseAppState {
         // Ensure each registered object has a spatial and sync position
         var toRemove = registry.getAllToRemove();
 
-        for (GameObject obj : toRemove) {
-            Spatial s = instances.get(obj);
-            if (s!=null){
-                world.removeNonPlayableCharacterControl((NonPlayebleGameCharacter) obj, s);
-                s.removeFromParent();
-            }
-            registry.completeRemove(obj);
-        }
         var current = registry.getAll();
         Set<GameObject> alive = new HashSet<>(current);
 
@@ -79,11 +68,36 @@ public class RenderAppState extends BaseAppState {
                     if (obj instanceof NonPlayebleGameCharacter){
                         world.addNonPlayableCharacterControl((NonPlayebleGameCharacter) obj, s);
                     }
+                    if (obj instanceof LightSource lightSource){
+                        for (PointLight light : lightSource.getLight()){
+                            rootNode.addLight(light);
+                        }
+                    }
                 }
             }
             if (!(obj instanceof GameCharacter)){
                 s.setLocalTranslation(obj.getPosition().x, obj.getPosition().y, obj.getPosition().z);
             }
+            if (obj instanceof PickableItem){
+                if (((PickableItem) obj).isPickedUp()){
+                    registry.startRemove(obj);
+                }
+                Vector3f cameraPos = getApplication().getCamera().getLocation();
+                s.lookAt(new Vector3f(cameraPos.x, s.getWorldTranslation().y, cameraPos.z), Vector3f.UNIT_Y);
+                Vec3 pos = obj.getPosition();
+                s.setLocalTranslation(pos.x,pos.y +((PickableItem) obj).getOffcet(tpf),pos.z);
+            }
+        }
+
+        for (GameObject obj : toRemove) {
+            Spatial s = instances.get(obj);
+            if (s!=null){
+                if (obj instanceof NonPlayebleGameCharacter){
+                    world.removeNonPlayableCharacterControl((NonPlayebleGameCharacter) obj, s);
+                }
+                s.removeFromParent();
+            }
+            registry.completeRemove(obj);
         }
         //TODO delete code if turns out it is useless
 

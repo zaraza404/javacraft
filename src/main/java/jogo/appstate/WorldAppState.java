@@ -18,11 +18,12 @@ import jogo.framework.math.Vec3;
 import jogo.gameobject.GameObject;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.character.NonPlayebleGameCharacter;
-import jogo.gameobject.item.PickableItem;
+import jogo.gameobject.object.AffectObject;
+import jogo.gameobject.object.PickableItem;
+import jogo.gameobject.object.Spikes;
 import jogo.util.pathfinding.Pathfinding;
 import jogo.voxel.VoxelWorld;
 
-import javax.naming.ldap.Control;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -65,13 +66,13 @@ public class WorldAppState extends BaseAppState {
 
         // Lighting
         AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White.mult(0.20f)); // slightly increased ambient
+        ambient.setColor(ColorRGBA.White.mult(0.50f)); // slightly increased ambient
         worldNode.addLight(ambient);
 
         DirectionalLight sun = new DirectionalLight();
         sun.setDirection(new Vector3f(-0.35f, -1.3f, -0.25f).normalizeLocal()); // more top-down to reduce harsh contrast
         sun.setColor(ColorRGBA.White.mult(0.85f)); // slightly dimmer sun
-        worldNode.addLight(sun);
+        //worldNode.addLight(sun);
 
         // Voxel world 16x16x16 (reduced size for simplicity)
         voxelWorld = new VoxelWorld(assetManager, 320, 32, 320);
@@ -90,8 +91,7 @@ public class WorldAppState extends BaseAppState {
     }
 
     public void addNonPlayableCharacterControl(NonPlayebleGameCharacter npc, Spatial spatial){
-        BetterCharacterControl npcControl =  new BetterCharacterControl(0.42f, 1.8f, 80f);
-
+        BetterCharacterControl npcControl =  new BetterCharacterControl(0.35f, 0.9f, 80f);
         npcControl.setJumpForce(new Vector3f(0,5f,0));
         npcControl.setGravity(new Vector3f(0, -24f, 0));
         npcControl.setJumpForce(new Vector3f(0, 400f, 0));
@@ -129,16 +129,6 @@ public class WorldAppState extends BaseAppState {
     public void update(float tpf) {
         var current = registry.getAll();
 
-        if (input != null && input.isMouseCaptured() && input.consumeBreakRequested()) {
-            var pick = voxelWorld.pickFirstSolid(cam, 6f);
-            pick.ifPresent(hit -> {
-                VoxelWorld.Vector3i cell = hit.cell;
-                if (voxelWorld.breakAt(cell.x, cell.y, cell.z)) {
-                    voxelWorld.rebuildDirtyChunks(physicsSpace);
-                    playerAppState.refreshPhysics();
-                }
-            });
-        }
         if (input != null && input.consumeToggleShadingRequested()) {
             voxelWorld.toggleRenderDebug();
         }
@@ -176,11 +166,20 @@ public class WorldAppState extends BaseAppState {
                         control.setViewDirection(npc.getMovementVec3(tpf).toVector3f());
                     }
                 }
-            } else if (obj instanceof PickableItem itm) {
-
+            } else if (obj instanceof AffectObject affObj) {
+                if (affObj.isInAffectRadius(getPlayerPosition())){
+                    affObj.affect(playerAppState.getPlayer(), tpf);
+                }
             }
         }
         for (NonPlayebleGameCharacter npc : npcControls.keySet() ){
+        }
+    }
+
+    public void removeBlockAt(VoxelWorld.Vector3i cell){
+        if (voxelWorld.breakAt(cell.x, cell.y, cell.z)) {
+            voxelWorld.rebuildDirtyChunks(physicsSpace);
+            playerAppState.refreshPhysics();
         }
     }
 

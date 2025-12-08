@@ -107,7 +107,6 @@ public class Inventory {
         return equipmentItems[pos];
     }
 
-
     public int getItemPos(InventoryItem item){
         for (int i = 0; i < inventoryItems.length; i++) {
             if (inventoryItems[i] == item){

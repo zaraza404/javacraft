@@ -101,28 +101,54 @@ public class MeshBuilder {
 
         switch (face) {
             case PX -> addQuadUV(
-                    new Vector3f(xf+1, yf,   zf  ), new Vector3f(xf+1, yf+1, zf  ), new Vector3f(xf+1, yf+1, zf+1), new Vector3f(xf+1, yf,   zf+1), FaceNormals.PX,
+                    new Vector3f(xf+1, yf,   zf  ),
+                    new Vector3f(xf+1, yf+1, zf  ),
+                    new Vector3f(xf+1, yf+1, zf+1),
+                    new Vector3f(xf+1, yf,   zf+1),
+                    FaceNormals.PX,
                     uv00, uv01, uv11, uv10
             );
             case NX -> addQuadUV(
-                    new Vector3f(xf,   yf,   zf+1), new Vector3f(xf,   yf+1, zf+1), new Vector3f(xf,   yf+1, zf  ), new Vector3f(xf,   yf,   zf  ), FaceNormals.NX,
+                    new Vector3f(xf,   yf,   zf+1),
+                    new Vector3f(xf,   yf+1, zf+1),
+                    new Vector3f(xf,   yf+1, zf  ),
+                    new Vector3f(xf,   yf,   zf  ),
+                    FaceNormals.NX,
                     uv00, uv01, uv11, uv10
             );
             case PY -> addQuadUV(
-                    new Vector3f(xf,   yf+1, zf  ), new Vector3f(xf,   yf+1, zf+1), new Vector3f(xf+1, yf+1, zf+1), new Vector3f(xf+1, yf+1, zf  ), FaceNormals.PY,
+                    new Vector3f(xf,   yf+1, zf  ),
+                    new Vector3f(xf,   yf+1, zf+1),
+                    new Vector3f(xf+1, yf+1, zf+1),
+                    new Vector3f(xf+1, yf+1, zf  ),
+                    FaceNormals.PY,
                     uv00, uv01, uv11, uv10
             );
             case NY -> addQuadUV(
-                    new Vector3f(xf+1, yf,   zf  ), new Vector3f(xf+1, yf,   zf+1), new Vector3f(xf,   yf,   zf+1), new Vector3f(xf,   yf,   zf  ), FaceNormals.NY,
+                    new Vector3f(xf+1, yf,   zf  ),
+                    new Vector3f(xf+1, yf,   zf+1),
+                    new Vector3f(xf,   yf,   zf+1),
+                    new Vector3f(xf,   yf,   zf  ),
+                    FaceNormals.NY,
                     uv00, uv01, uv11, uv10
             );
             case PZ -> addQuadUV(
-                    new Vector3f(xf,   yf,   zf+1), new Vector3f(xf+1, yf,   zf+1), new Vector3f(xf+1, yf+1, zf+1), new Vector3f(xf,   yf+1, zf+1), FaceNormals.PZ,
-                    uv00, uv10, uv11, uv01
+
+                    new Vector3f(xf+1, yf,   zf+1),
+                    new Vector3f(xf+1, yf+1, zf+1),
+                    new Vector3f(xf,   yf+1, zf+1),
+                    new Vector3f(xf,   yf,   zf+1),
+                    FaceNormals.PZ,
+                    uv00, uv01, uv11, uv10
             );
             case NZ -> addQuadUV(
-                    new Vector3f(xf+1, yf,   zf  ), new Vector3f(xf,   yf,   zf  ), new Vector3f(xf,   yf+1, zf  ), new Vector3f(xf+1, yf+1, zf  ), FaceNormals.NZ,
-                    uv00, uv10, uv11, uv01
+
+                    new Vector3f(xf,   yf,   zf  ),
+                    new Vector3f(xf,   yf+1, zf  ),
+                    new Vector3f(xf+1, yf+1, zf  ),
+                    new Vector3f(xf+1, yf,   zf  ),
+                    FaceNormals.NZ,
+                    uv00, uv01, uv11, uv10
             );
         }
     }

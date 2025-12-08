@@ -75,7 +75,7 @@ public class PlayerAppState extends BaseAppState {
         player = new Player();
 
         // BetterCharacterControl(radius, height, mass)
-        characterControl = new BetterCharacterControl(0.42f, 1.8f, 80f);
+        characterControl = new BetterCharacterControl(0.34f, 0.9f, 80f);
         characterControl.setGravity(new Vector3f(0, -24f, 0));
         characterControl.setJumpForce(new Vector3f(0, 400f, 0));
         playerNode.addControl(characterControl);

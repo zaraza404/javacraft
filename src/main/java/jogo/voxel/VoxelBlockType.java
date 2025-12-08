@@ -5,6 +5,7 @@ import com.jme3.material.Material;
 
 public abstract class VoxelBlockType {
     private final String name;
+    protected boolean breakable = false;
 
     protected VoxelBlockType(String name) {
         this.name = name;
@@ -17,6 +18,9 @@ public abstract class VoxelBlockType {
     /** Whether this block is physically solid (collides/occludes). */
     public boolean isSolid() { return true; }
 
+    public boolean isBreakable() {
+        return breakable;
+    }
     /**
      * Returns the Material for this block type. Override in subclasses for custom materials.
      */
