@@ -16,6 +16,7 @@ import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
 import jogo.framework.math.Vec3;
 import jogo.gameobject.character.EnemyGameCharacter;
+import jogo.gameobject.character.LeatherGoblin;
 import jogo.gameobject.object.PickableItem;
 import jogo.gameobject.object.Spikes;
 import jogo.gameobject.GameObjectSpawner;
@@ -84,8 +85,10 @@ public class Jogo extends SimpleApplication {
 
         stateManager.attach(player);
 
-        EnemyGameCharacter enemy = new EnemyGameCharacter("RedBall");
-        enemy.setPosition(7.1f, 4.0f, 7.1f);
+
+
+        LeatherGoblin enemy = new LeatherGoblin();
+        enemy.setPosition(7.5f, 4.0f, 7.5f);
         registry.add(enemy);
 
         try {

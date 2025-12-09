@@ -42,6 +42,10 @@ public class VoxelWorld {
 
     private final Pathfinding pathfinding;
 
+    private Vector3f recomendedSpawn = new Vector3f(10f,4f,10f);
+
+    private int[] levelDim;
+
     public VoxelWorld(AssetManager assetManager, int sizeX, int sizeY, int sizeZ) {
         this.assetManager = assetManager;
         this.sizeX = sizeX;
@@ -103,7 +107,7 @@ public class VoxelWorld {
 
     public boolean breakAt(int x, int y, int z) {
         if (!inBounds(x,y,z)) return false;
-        if (!palette.get(getBlock(x,y,z)).isBreakable()) return false;
+        if (palette.get(getBlock(x,y,z)).isBreakable()) return false;
         setBlock(x, y, z, VoxelPalette.AIR_ID);
         return true;
     }
@@ -114,10 +118,10 @@ public class VoxelWorld {
     public void generateLayers() {
         LevelMap level = new LevelMap("level1");
         byte[][][] level_block_layout= level.getMapBlockLayout();
-        int[] level_dim = level.getDimensions();
-        for (int z = 0; z < level_dim[1]; z++) {
-            for (int x = 0; x < level_dim[0]; x++) {
-                for (int y = 0; y < 7; y++) {
+        levelDim = level.getDimensions();
+        for (int z = 0; z < levelDim[1]; z++) {
+            for (int x = 0; x < levelDim[0]; x++) {
+                for (int y = 0; y < levelDim[2]; y++) {
                     setBlock(x,y,z,level_block_layout[x][z][y]);
                 }
             }
@@ -126,6 +130,7 @@ public class VoxelWorld {
 
         GameObjectSpawner.getInstance().SpawnObjects(level.getGameObjectsLayout());
 
+        recomendedSpawn = new Vector3f(level.getSpawn()[0] + 0.5f, 4f, level.getSpawn()[1] + 0.5f);
     }
 
     public int getTopSolidY(int x, int z) {
@@ -138,9 +143,9 @@ public class VoxelWorld {
 
     public Vector3f getRecommendedSpawn() {
 
+        return recomendedSpawn;
 
 
-        return new Vector3f(2.1f, 5.0f, 2.1f);
         /*int cx = sizeX / 2;
         int cz = sizeZ / 2;
         int ty = getTopSolidY(cx, cz);
@@ -152,7 +157,7 @@ public class VoxelWorld {
 
     public ArrayList<Vec3> getWalkable(Vec3 character_current_position){
         int character_x = (int) character_current_position.x;
-        int character_y = (int) character_current_position.y;
+        int character_y = (int) (character_current_position.y);
         int character_z = (int) character_current_position.z;
 
         ArrayList<Vec3> walkable = new ArrayList<>();
@@ -174,6 +179,7 @@ public class VoxelWorld {
                 }
             }
         }
+        System.out.println(walkable);
         return walkable;
 
     }
@@ -193,7 +199,7 @@ public class VoxelWorld {
     }
 
     private boolean CheckPosWalkable(int x, int y, int z){
-        if (x < 0 || x >= 16 || z < 0 || z >= 16 || y < 0 || y >= 5) {
+        if (x < 0 || x >= levelDim[0] || z < 0 || z >= levelDim[1] || y < 0 || y >= levelDim[2]-1) {
             return false;
         }
         // Check if there's a block BELOW to stand on, and current position is air

@@ -22,6 +22,7 @@ import jogo.gameobject.object.AffectObject;
 import jogo.gameobject.object.PickableItem;
 import jogo.gameobject.object.Spikes;
 import jogo.util.pathfinding.Pathfinding;
+import jogo.voxel.VoxelBlockType;
 import jogo.voxel.VoxelWorld;
 
 import java.util.ArrayList;
@@ -66,13 +67,9 @@ public class WorldAppState extends BaseAppState {
 
         // Lighting
         AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White.mult(0.50f)); // slightly increased ambient
-        worldNode.addLight(ambient);
-
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.35f, -1.3f, -0.25f).normalizeLocal()); // more top-down to reduce harsh contrast
-        sun.setColor(ColorRGBA.White.mult(0.85f)); // slightly dimmer sun
-        //worldNode.addLight(sun);
+        ambient.setColor(ColorRGBA.White);
+        ambient.setEnabled(true);// slightly increased ambient
+        //rootNode.addLight(ambient);
 
         // Voxel world 16x16x16 (reduced size for simplicity)
         voxelWorld = new VoxelWorld(assetManager, 320, 32, 320);
@@ -152,18 +149,18 @@ public class WorldAppState extends BaseAppState {
                     if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 1f){
                         npc.attack(playerAppState.getPlayer());
                     }
+                    if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 8f){
 
-                    if (npc.getPosition().getXZDistanceTo(npc.getTargetPosition()) < 0.2f) {//returns the same value all the time
-                        control.setWalkDirection(Vector3f.ZERO);
-                        npc.decision(this);
-                        control.setWalkDirection(npc.getMovementVec3(tpf).toVector3f());
-                        npc.onArrivedAtPos();
-                        if (npc.getPath().isEmpty()) {
+                        if (npc.getPosition().getXZDistanceTo(npc.getTargetPosition()) < 0.2f) {//returns the same value all the time
                             npc.decision(this);
+                            npc.onArrivedAtPos();
+                            if (npc.getPath().isEmpty()) {
+                                npc.decision(this);
+                            }
+                        } else {
+                            control.setWalkDirection(npc.getMovementVec3(tpf).toVector3f());
+                            control.setViewDirection(npc.getMovementVec3(tpf).toVector3f());
                         }
-                    } else {
-                        control.setWalkDirection(npc.getMovementVec3(tpf).toVector3f());
-                        control.setViewDirection(npc.getMovementVec3(tpf).toVector3f());
                     }
                 }
             } else if (obj instanceof AffectObject affObj) {
@@ -181,6 +178,11 @@ public class WorldAppState extends BaseAppState {
             voxelWorld.rebuildDirtyChunks(physicsSpace);
             playerAppState.refreshPhysics();
         }
+    }
+
+    public boolean interactWithBlockAt(VoxelWorld.Vector3i cell){
+        VoxelBlockType block = voxelWorld.getPalette().get(voxelWorld.getBlock(cell.x, cell.y, cell.z));
+        return block.interact();
     }
 
     @Override

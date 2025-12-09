@@ -42,7 +42,7 @@ public class PlayerAppState extends BaseAppState {
     private float pitch = 0f;
 
     // tuning
-    private float moveSpeed = 3.0f; // m/s
+    private float moveSpeed = 1.8f; // m/s
     private float sprintMultiplier = 1.7f;
     private float mouseSensitivity = 30f; // degrees per mouse analog unit
     private float eyeHeight = 0.6f;
@@ -75,16 +75,16 @@ public class PlayerAppState extends BaseAppState {
         player = new Player();
 
         // BetterCharacterControl(radius, height, mass)
-        characterControl = new BetterCharacterControl(0.34f, 0.9f, 80f);
+        characterControl = new BetterCharacterControl(0.4f, 0.9f, 40f);
         characterControl.setGravity(new Vector3f(0, -24f, 0));
-        characterControl.setJumpForce(new Vector3f(0, 400f, 0));
+        characterControl.setJumpForce(new Vector3f(0, 120f, 0));
         playerNode.addControl(characterControl);
         physicsSpace.add(characterControl);
 
         // Local light source that follows the player's head
         playerLight = new PointLight();
-        playerLight.setColor(new com.jme3.math.ColorRGBA(0.6f, 0.55f, 0.5f, 1f));
-        playerLight.setRadius(12f);
+        playerLight.setColor(new com.jme3.math.ColorRGBA(0.6f, 0.55f, 0.3f, 1f));
+        playerLight.setRadius(8f);
         rootNode.addLight(playerLight);
 
         // Spawn at recommended location

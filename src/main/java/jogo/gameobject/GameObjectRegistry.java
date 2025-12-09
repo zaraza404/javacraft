@@ -53,6 +53,7 @@ public class GameObjectRegistry {
             r.register(2, Class.forName("jogo.gameobject.character.EnemyGameCharacter"));
             r.register(3, Class.forName("jogo.gameobject.object.Spikes"));
             r.register(4, Class.forName("jogo.gameobject.object.Torch"));
+            r.register(5, Class.forName("jogo.gameobject.character.LeatherGoblin"));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

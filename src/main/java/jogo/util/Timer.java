@@ -20,6 +20,7 @@ public class Timer {
         this.timeLeft = waitTime;
         this.finished = false;
         this.paused = false;
+
     }
 
     public void pause(){

@@ -3,6 +3,7 @@ package jogo.gameobject.character;
 import jogo.gameobject.GameObject;
 import jogo.systems.StatType;
 import jogo.util.Timer;
+import jogo.util.WeaponModel;
 
 import java.util.HashMap;
 
@@ -12,7 +13,8 @@ public abstract class GameCharacter extends GameObject {
     private float health;
     private float damage = 0.1f;
     private float defence = 0f;
-    private final Timer attackTimer = new Timer(0.2f);
+    private final Timer attackTimer = new Timer(1f);
+    protected WeaponModel weapon;
 
     protected GameCharacter(String name) {
         super(name);
@@ -26,12 +28,18 @@ public abstract class GameCharacter extends GameObject {
     // update function should be called each frame
     public void update(float tpf){
         attackTimer.update(tpf);
+        if (weapon != null){
+            weapon.update(tpf);
+        }
     }
 
     public void attack(GameCharacter target) {
         if (attackTimer.isFinished()){
             target.recieveDamage(this.damage);
             attackTimer.start();
+            if (weapon != null){
+                weapon.startAttack();
+            }
         }
     }
 
@@ -73,5 +81,4 @@ public abstract class GameCharacter extends GameObject {
     public void setMaxHealth(float maxHealth) { this.maxHealth = maxHealth + baseStats.get(StatType.HEALTH); }
     public float getDamage() { return this.damage; }
     public void setDamage(float damage) { this.damage = damage + baseStats.get(StatType.DAMAGE); }
-
 }

@@ -61,12 +61,11 @@ public class InteractionAppState extends BaseAppState {
                 }
             }
 
-            // 2) If no item hit, consider voxel block under crosshair (exercise for students)
             VoxelWorld vw = world != null ? world.getVoxelWorld() : null;
             if (vw != null) {
                 vw.pickFirstSolid(cam, reach).ifPresent(hit -> {
                     VoxelWorld.Vector3i cell = hit.cell;
-                    System.out.println("TODO (exercise): interact with voxel at " + cell.x + "," + cell.y + "," + cell.z);
+                    world.interactWithBlockAt(cell);
                 });
             }
         }
@@ -75,7 +74,6 @@ public class InteractionAppState extends BaseAppState {
             Vector3f origin = cam.getLocation();
             Vector3f dir = cam.getDirection().normalize();
 
-            // 1) Try to interact with a rendered GameObject (items)
             Ray ray = new Ray(origin, dir);
             ray.setLimit(reach);
             CollisionResults results = new CollisionResults();
@@ -95,7 +93,6 @@ public class InteractionAppState extends BaseAppState {
                 vw.pickFirstSolid(cam, reach).ifPresent(hit -> {
                     VoxelWorld.Vector3i cell = hit.cell;
                     world.removeBlockAt(cell);
-                    System.out.println("TODO (exercise): interact with voxel at " + cell.x + "," + cell.y + "," + cell.z);
                 });
             }
         }

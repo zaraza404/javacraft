@@ -18,6 +18,7 @@ import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.character.NonPlayebleGameCharacter;
 import jogo.gameobject.object.LightSource;
 import jogo.gameobject.object.PickableItem;
+import jogo.util.WeaponModel;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,6 +76,7 @@ public class RenderAppState extends BaseAppState {
                     }
                 }
             }
+
             if (!(obj instanceof GameCharacter)){
                 s.setLocalTranslation(obj.getPosition().x, obj.getPosition().y, obj.getPosition().z);
             }
