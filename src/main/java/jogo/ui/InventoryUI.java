@@ -41,7 +41,7 @@ public class InventoryUI extends UserInterface{
         int x = sapp.getCamera().getWidth()/2;
         int y = sapp.getCamera().getHeight()/2;
 
-        inventory = player.inventory;
+        inventory = player.getInventory();
         inventoryIcons = new ClickablePicture[inventory.getInventoryItems().length];
         inventorySlots = new ClickablePicture[inventory.getInventoryItems().length];
 

@@ -7,10 +7,12 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.light.PointLight;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import jogo.framework.math.Vec3;
 import jogo.gameobject.character.GameCharacter;
 import jogo.systems.StatType;
@@ -20,6 +22,7 @@ import jogo.gameobject.character.Player;
 import jogo.systems.inventoryitem.consumableitem.food.BerriesItem;
 import jogo.systems.inventoryitem.equipmentitem.weapon.HammerItem;
 import jogo.systems.inventoryitem.equipmentitem.weapon.SwordItem;
+import jogo.util.WeaponModel;
 
 public class PlayerAppState extends BaseAppState {
 
@@ -34,8 +37,8 @@ public class PlayerAppState extends BaseAppState {
     private BetterCharacterControl characterControl;
     private Player player;
 
-    //TODO change from public
-    public Inventory inventory;
+
+    private Inventory inventory;
 
     // view angles
     private float yaw = 0f;
@@ -46,6 +49,8 @@ public class PlayerAppState extends BaseAppState {
     private float sprintMultiplier = 1.7f;
     private float mouseSensitivity = 30f; // degrees per mouse analog unit
     private float eyeHeight = 0.6f;
+
+    private Node weaponNode;
 
     private Vector3f spawnPosition = new Vector3f(25.5f, 12f, 25.5f);
     private PointLight playerLight;
@@ -90,11 +95,25 @@ public class PlayerAppState extends BaseAppState {
         // Spawn at recommended location
         respawn();
 
+
+
         // initialize camera
         cam.setFrustumPerspective(60f, (float) cam.getWidth() / cam.getHeight(), 0.05f, 500f);
         // Look slightly downward so ground is visible immediately
         this.pitch = -0.35f;
         applyViewToCamera();
+
+        WeaponModel weaponModel = new WeaponModel(assetManager);
+        weaponNode = new Node();
+        weaponModel.setLocalTranslation(-0.3f,-0.3f,0.4f);
+        weaponModel.setLocalRotation(new Quaternion().fromAngleAxis((float)Math.PI/2, Vector3f.UNIT_Y));
+        weaponNode.attachChild(weaponModel);
+        weaponNode.setLocalTranslation(0,eyeHeight,0);
+        playerNode.attachChild(weaponNode);
+
+        player.setWeapon(weaponModel);
+
+        applyViewToWeapon();
 
         //TODO remove - Testing
         inventory.addItem(new BerriesItem());
@@ -110,6 +129,7 @@ public class PlayerAppState extends BaseAppState {
     public void update(float tpf) {
         // update player class
         player.update(tpf);
+        applyViewToWeapon();
 
         // respawn on request
         if (input.consumeRespawnRequested()) {
@@ -153,6 +173,7 @@ public class PlayerAppState extends BaseAppState {
 
         player.setPosition(new Vec3(playerNode.getWorldTranslation()));
 
+
         // place camera at eye height above physics location
         applyViewToCamera();
 
@@ -182,6 +203,10 @@ public class PlayerAppState extends BaseAppState {
         Vector3f loc = playerNode.getWorldTranslation().add(0, eyeHeight, 0);
         cam.setLocation(loc);
         cam.setRotation(new com.jme3.math.Quaternion().fromAngles(pitch, yaw, 0f));
+    }
+
+    private void applyViewToWeapon() {
+        weaponNode.setLocalRotation(cam.getRotation());
     }
 
     public void updateStats() {
@@ -224,5 +249,9 @@ public class PlayerAppState extends BaseAppState {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 }

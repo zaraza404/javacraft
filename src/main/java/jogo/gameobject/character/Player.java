@@ -11,12 +11,16 @@ public class Player extends GameCharacter implements Comparable<Player>{
     public int score = 2;
     public Player() {
         super("Player");
+        setAttackSpeed(0.2f);
     }
 
     public int compareTo(Player score){
         return (this.score - score.score);
     }
 
+    public void setWeapon(WeaponModel weapon){
+        this.weapon = weapon;
+    }
 
 
 }

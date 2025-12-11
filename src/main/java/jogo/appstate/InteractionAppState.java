@@ -23,7 +23,7 @@ public class InteractionAppState extends BaseAppState {
     private final RenderIndex renderIndex;
     private final WorldAppState world;
     private final PlayerAppState player;
-    private float reach = 5.5f;
+    private float reach = 1.5f;
 
     public InteractionAppState(Node rootNode, Camera cam, InputAppState input, RenderIndex renderIndex, WorldAppState world, PlayerAppState player) {
         this.rootNode = rootNode;
@@ -53,7 +53,7 @@ public class InteractionAppState extends BaseAppState {
                 Spatial hit = results.getClosestCollision().getGeometry();
                 GameObject obj = findRegistered(hit);
                 if (obj instanceof PickableItem pickableItem) {
-                    if (player.inventory.addItem(pickableItem.pickUp())){
+                    if (player.getInventory().addItem(pickableItem.pickUp())){
                         System.out.println("Interacted with item: " + obj.getName());
                         ((PickableItem) obj).setPickedUp();
                     }

@@ -68,6 +68,9 @@ public abstract class GameCharacter extends GameObject {
         }
     }
 
+    public void setAttackSpeed(float attackSpeed){
+        attackTimer.setWaitTime(attackSpeed);
+    }
     public float getHealthPercentage() {return (this.health / this.maxHealth); }
     public float getHealth() { return this.health; }
     public void setHealth(float health) { this.health = health; }

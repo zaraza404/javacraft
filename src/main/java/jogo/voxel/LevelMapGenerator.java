@@ -25,7 +25,7 @@ public class LevelMapGenerator {
         random = new Random(seed);
 
         //Generate Rooms
-        generateRooms(7);
+        generateRooms(9);
 
         printMap();
         return mapLayout;
@@ -73,8 +73,8 @@ public class LevelMapGenerator {
 
     private void generateRoom(int pos_x, int pos_z, int size_x, int size_z){  // size_x and size_z have to be at least 5
 
-        for (int x = pos_x; x < pos_x + size_x; x ++){
-            for (int z = pos_z; z < pos_z + size_z; z ++){
+        for (int x = pos_x; x < pos_x + size_x; x++){
+            for (int z = pos_z; z < pos_z + size_z; z++){
                 if (x == pos_x || x == size_x-1 || z == pos_z || z == size_z-1){
                     if (random.nextFloat() < 0.05f){
                         mapLayout[z][x] = 'T';
@@ -86,17 +86,23 @@ public class LevelMapGenerator {
 
                     float tileTypeDecider = random.nextFloat();
 
-                    if (tileTypeDecider < 0.02){
+                    if (tileTypeDecider < 0.03f){
                         mapLayout[z][x] = 'L';
-                    } else if (tileTypeDecider < 0.04){
+                    } else if (tileTypeDecider < 0.06){
                         mapLayout[z][x] = 'E';
-                    } else if (tileTypeDecider < 0.2){
-                        mapLayout[z][x] = 'M';
-                    } else if (tileTypeDecider < 0.21){
+                    } else if (tileTypeDecider < 0.1){
                         mapLayout[z][x] = 'T';
                     } else {
                         mapLayout[z][x] = '.';
                     }
+                }
+            }
+        }
+
+        for (int x = pos_x; x < pos_x + size_x; x++){
+            for (int z = pos_z; z < pos_z + size_z; z++) {
+                if (random.nextFloat() < 0.1f){
+                    buildSpikePit(z,x);
                 }
             }
         }
@@ -149,12 +155,20 @@ public class LevelMapGenerator {
 
     private void connectTwoRooms(int x1, int z1, int x2, int z2){
 
+        boolean secretPassage = random.nextFloat() < 0.05f;
+
         int startX = Math.min(x1, x2);
         int endX = Math.max(x1, x2);
         for (int x = startX; x <= endX; x++){
             if (x >= 0 && x < mapLayout[0].length && z1 >= 0 && z1 < mapLayout.length){
                 if (mapLayout[z1][x] == '#'){
-                    mapLayout[z1][x] = '=';
+                    if (secretPassage){
+                        mapLayout[z1][x] = '~';
+                    } else {
+                        mapLayout[z1][x] = '=';
+                    }
+                } else {
+                    mapLayout[z1][x] = '.';
                 }
             }
         }
@@ -164,7 +178,26 @@ public class LevelMapGenerator {
         for (int z = startZ; z <= endZ; z++){
             if (x2 >= 0 && x2 < mapLayout[0].length && z >= 0 && z < mapLayout.length){
                 if (mapLayout[z][x2] == '#'){
-                    mapLayout[z][x2] = '=';
+                    if (secretPassage){
+                        mapLayout[z][x2] = '~';
+                    } else {
+                        mapLayout[z][x2] = '=';
+                    }
+                }
+            }
+        }
+    }
+
+    private void buildSpikePit(int posX, int posZ){
+        System.out.println("Hole at " + posX + " " + posZ);
+        if (posX < mapLayout[0].length - 2 || posX > 2 || posZ < mapLayout.length - 2 || posZ > 2) {
+            for (int z = posZ-1; z <= posZ+1; z++){
+                for (int x = posX-1; x <= posX+1; x++){
+                    System.out.println(x + " " + z);
+                    if (mapLayout[z][x] != '#') {
+                        mapLayout[z][x] = 'M';
+                    }
+
                 }
             }
         }

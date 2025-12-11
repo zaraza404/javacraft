@@ -107,7 +107,7 @@ public class VoxelWorld {
 
     public boolean breakAt(int x, int y, int z) {
         if (!inBounds(x,y,z)) return false;
-        if (palette.get(getBlock(x,y,z)).isBreakable()) return false;
+        if (!palette.get(getBlock(x,y,z)).isBreakable()) return false;
         setBlock(x, y, z, VoxelPalette.AIR_ID);
         return true;
     }
@@ -179,7 +179,6 @@ public class VoxelWorld {
                 }
             }
         }
-        System.out.println(walkable);
         return walkable;
 
     }

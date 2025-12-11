@@ -5,6 +5,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.Node;
 import jogo.ui.*;
+import jogo.util.WeaponModel;
 
 public class HudAppState extends BaseAppState {
 
@@ -14,6 +15,7 @@ public class HudAppState extends BaseAppState {
     private InputAppState input;
 
     private UserInterface currentUI;
+
 
     enum UIType{
         OVERLAY,

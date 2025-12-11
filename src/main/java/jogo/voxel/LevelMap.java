@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class LevelMap {
     private String name;
     private int[] dimensions;
-    /*private char[][] map_layout = {
+    private char[][] map_layout = {
             {'_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_'},
             {'_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_'},
             {'_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_'},
@@ -26,7 +26,8 @@ public class LevelMap {
             {'_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_'},
             {'_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_'}
 
-    };*/
+    };
+    /*
     private char[][] map_layout = {
             {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
             {'#','.','.','.','#','.','.','.','.','.','#','.','.','.','.','#'},
@@ -44,14 +45,14 @@ public class LevelMap {
             {'#','.','M','M','.','#','#','#','~','#','#','.','M','M','.','#'},
             {'#','.','.','~','.','.','.','.','.','.','.','.','.','.','.','#'},
             {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-    };
+    };*/
 
     private HashMap<java.lang.Character, byte[][]> layout_dictionary= new HashMap<>();
 
     public LevelMap(String name){
         this.name = name;
 
-        this.map_layout = new LevelMapGenerator().generateMap(42);
+        this.map_layout = new LevelMapGenerator().generateMap(69);
         this.dimensions = new int[]{map_layout.length,map_layout[0].length,8};
         layout_dictionary.put(' ', new byte[][]{{0, 0, 0, 0, 0, 0, 0, 0},{}});
         layout_dictionary.put('E', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{}});
