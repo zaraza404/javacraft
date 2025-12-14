@@ -91,21 +91,11 @@ public class Jogo extends SimpleApplication {
         enemy.setPosition(7.5f, 4.0f, 7.5f);
         registry.add(enemy);
 
-        try {
-            PickableItem item = new PickableItem((byte) 0);
-            item.setPosition(2.1f, 4.0f, 2.1f);
-            registry.add(item);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+
+        PickableItem item = new PickableItem((byte) 0);
+        item.setPosition(2.1f, 4.0f, 2.1f);
+        registry.add(item);
+
 
         // Post-processing: SSAO for subtle contact shadows
         try {

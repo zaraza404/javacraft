@@ -7,6 +7,8 @@ import jogo.systems.inventoryitem.InventoryItem;
 import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
 import jogo.systems.inventoryitem.equipmentitem.EquipmentItem;
 
+import java.util.HashMap;
+
 public class Inventory {
     private InventoryItem[] equipmentItems;
     private InventoryItem[] inventoryItems;
@@ -125,6 +127,23 @@ public class Inventory {
             total += ((EquipmentItem)item).getStat(statType);
         }
         return total;
+    }
+
+    public HashMap<StatType, Float> getStats(){
+        HashMap<StatType, Float> stats = new HashMap<>();
+
+        for (StatType s: StatType.values()){
+            float total = 0f;
+            for (InventoryItem item: equipmentItems){
+                if (item == null){
+                    continue;
+                }
+                total += ((EquipmentItem)item).getStat(s);
+            }
+            stats.put(s, total);
+        }
+
+        return stats;
     }
 
 

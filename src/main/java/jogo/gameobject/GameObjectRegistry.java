@@ -49,11 +49,9 @@ public class GameObjectRegistry {
         GameObjectRegistry r = new GameObjectRegistry();
         try {
             r.register(0, Class.forName("jogo.gameobject.character.Player"));
-            r.register(1, Class.forName("jogo.gameobject.object.PickableItem"));
-            r.register(2, Class.forName("jogo.gameobject.character.EnemyGameCharacter"));
-            r.register(3, Class.forName("jogo.gameobject.object.Spikes"));
-            r.register(4, Class.forName("jogo.gameobject.object.Torch"));
-            r.register(5, Class.forName("jogo.gameobject.character.LeatherGoblin"));
+            r.register(1, Class.forName("jogo.gameobject.object.Torch"));
+            r.register(2, Class.forName("jogo.gameobject.object.Spikes"));
+            r.register(3, Class.forName("jogo.gameobject.character.LeatherGoblin"));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

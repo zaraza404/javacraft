@@ -16,14 +16,17 @@ import com.jme3.scene.Spatial;
 import jogo.engine.GameRegistry;
 import jogo.framework.math.Vec3;
 import jogo.gameobject.GameObject;
+import jogo.gameobject.GameObjectSpawner;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.character.NonPlayebleGameCharacter;
 import jogo.gameobject.object.AffectObject;
 import jogo.gameobject.object.PickableItem;
 import jogo.gameobject.object.Spikes;
 import jogo.util.pathfinding.Pathfinding;
+import jogo.voxel.LevelMap;
 import jogo.voxel.VoxelBlockType;
 import jogo.voxel.VoxelWorld;
+import jogo.voxel.blocks.DoorBlockType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +48,9 @@ public class WorldAppState extends BaseAppState {
 
     private HashMap<NonPlayebleGameCharacter, BetterCharacterControl> npcControls = new HashMap<>();
     private Pathfinding pathfinding;
+
+    private int currentDifficulty = 1;
+    private int currentSeed = 1;
 
     public WorldAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, PhysicsSpace physicsSpace, Camera cam, InputAppState input) {
         this.rootNode = rootNode;
@@ -73,11 +79,13 @@ public class WorldAppState extends BaseAppState {
 
         // Voxel world 16x16x16 (reduced size for simplicity)
         voxelWorld = new VoxelWorld(assetManager, 320, 32, 320);
-        voxelWorld.generateLayers();
-        voxelWorld.buildMeshes();
-        voxelWorld.clearAllDirtyFlags();
         worldNode.attachChild(voxelWorld.getNode());
-        voxelWorld.buildPhysics(physicsSpace);
+
+
+        loadLevel(1,currentSeed);
+
+
+
 
         // compute recommended spawn
         spawnPosition = voxelWorld.getRecommendedSpawn();
@@ -135,6 +143,7 @@ public class WorldAppState extends BaseAppState {
                 if (chr instanceof NonPlayebleGameCharacter npc){
                     if (npc.getHealth() <= 0.0f) {
                         registry.startRemove(npc);
+                        GameObjectSpawner.getInstance().spawnDropItem(npc.getDropId(), npc.getPosition());
                         continue;
                     }
 
@@ -149,9 +158,9 @@ public class WorldAppState extends BaseAppState {
                     if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 1f){
                         npc.attack(playerAppState.getPlayer());
                     }
-                    if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 8f){
+                    else if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 8f){
 
-                        if (npc.getPosition().getXZDistanceTo(npc.getTargetPosition()) < 0.2f) {//returns the same value all the time
+                        if (npc.getPosition().getXZDistanceTo(npc.getTargetPosition()) < 0.5f) {
                             npc.decision(this);
                             npc.onArrivedAtPos();
                             if (npc.getPath().isEmpty()) {
@@ -182,7 +191,30 @@ public class WorldAppState extends BaseAppState {
 
     public boolean interactWithBlockAt(VoxelWorld.Vector3i cell){
         VoxelBlockType block = voxelWorld.getPalette().get(voxelWorld.getBlock(cell.x, cell.y, cell.z));
+        if (block instanceof DoorBlockType){
+            currentSeed += 1;
+            currentDifficulty += 1;
+            loadLevel(currentDifficulty, currentSeed);
+        }
         return block.interact();
+    }
+
+    public void loadLevel(int levelDifficulty, int levelSeed){
+        for (GameObject obj : registry.getAll()){
+            registry.startRemove(obj);
+        }
+        LevelMap level = new LevelMap("level1", levelSeed);
+        byte[][][] level_block_layout= level.getMapBlockLayout();
+        voxelWorld.generateLayers(level_block_layout);
+        voxelWorld.buildMeshes();
+        voxelWorld.clearAllDirtyFlags();
+        voxelWorld.buildPhysics(physicsSpace);
+        GameObjectSpawner.getInstance().SpawnObjects(level.getGameObjectsLayout());
+
+        voxelWorld.setRecommendedSpawn(new Vector3f(level.getSpawn()[0] + 0.5f, 4f, level.getSpawn()[1] + 0.5f));
+        playerAppState.setSpawnPosition(voxelWorld.getRecommendedSpawn());
+        playerAppState.moveToSpawn();
+
     }
 
     @Override

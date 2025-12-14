@@ -10,7 +10,10 @@ import jogo.util.WeaponModel;
 
 public class LeatherGoblin extends EnemyGameCharacter{
 
-    public LeatherGoblin(){ super("Leather Goblin"); }
+    public LeatherGoblin(){
+        super("Leather Goblin");
+        setDropItemsTable(new int[]{4,8,12});
+    }
 
 
 

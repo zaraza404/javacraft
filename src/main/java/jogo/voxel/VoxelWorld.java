@@ -114,23 +114,29 @@ public class VoxelWorld {
 
     public Node getNode() { return node; }
 
-    //TODO this is where you'll generate your world
-    public void generateLayers() {
-        LevelMap level = new LevelMap("level1");
-        byte[][][] level_block_layout= level.getMapBlockLayout();
-        levelDim = level.getDimensions();
-        for (int z = 0; z < levelDim[1]; z++) {
-            for (int x = 0; x < levelDim[0]; x++) {
-                for (int y = 0; y < levelDim[2]; y++) {
-                    setBlock(x,y,z,level_block_layout[x][z][y]);
+    public void clearWorld() {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                for (int z = 0; z < sizeZ; z++) {
+                    setBlock(x, y, z, VoxelPalette.AIR_ID);
                 }
             }
         }
-        Vector3i pos = new Vector3i(getRecommendedSpawn());
+    }
 
-        GameObjectSpawner.getInstance().SpawnObjects(level.getGameObjectsLayout());
+    //TODO this is where you'll generate your world
+    public void generateLayers(byte[][][] levelBlockLayout) {
 
-        recomendedSpawn = new Vector3f(level.getSpawn()[0] + 0.5f, 4f, level.getSpawn()[1] + 0.5f);
+        clearWorld();
+        levelDim = new int[]{levelBlockLayout.length,levelBlockLayout[0].length,levelBlockLayout[0][0].length};
+
+        for (int z = 0; z < levelDim[1]; z++) {
+            for (int x = 0; x < levelDim[0]; x++) {
+                for (int y = 0; y < levelDim[2]; y++) {
+                    setBlock(x,y,z,levelBlockLayout[x][z][y]);
+                }
+            }
+        }
     }
 
     public int getTopSolidY(int x, int z) {
@@ -142,16 +148,11 @@ public class VoxelWorld {
     }
 
     public Vector3f getRecommendedSpawn() {
-
         return recomendedSpawn;
+    }
 
-
-        /*int cx = sizeX / 2;
-        int cz = sizeZ / 2;
-        int ty = getTopSolidY(cx, cz);
-        if (ty < 0) ty = groundHeight;
-        return new Vector3f(cx + 0.5f, ty + 3.0f, cz + 0.5f);*/
-
+    public void setRecommendedSpawn(Vector3f pos) {
+        recomendedSpawn = pos;
     }
 
 

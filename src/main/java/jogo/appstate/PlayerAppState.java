@@ -12,14 +12,15 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import jogo.framework.math.Vec3;
 import jogo.gameobject.character.GameCharacter;
-import jogo.systems.StatType;
 import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
 import jogo.systems.inventory.Inventory;
 import jogo.gameobject.character.Player;
 import jogo.systems.inventoryitem.consumableitem.food.BerriesItem;
+import jogo.systems.inventoryitem.equipmentitem.accessory.GoblinEarItem;
+import jogo.systems.inventoryitem.equipmentitem.armor.HeavyArmorItem;
+import jogo.systems.inventoryitem.equipmentitem.ring.DamageRingItem;
 import jogo.systems.inventoryitem.equipmentitem.weapon.HammerItem;
 import jogo.systems.inventoryitem.equipmentitem.weapon.SwordItem;
 import jogo.util.WeaponModel;
@@ -116,12 +117,13 @@ public class PlayerAppState extends BaseAppState {
         applyViewToWeapon();
 
         //TODO remove - Testing
-        inventory.addItem(new BerriesItem());
-        inventory.addItem(new BerriesItem());
-        inventory.addItem(new SwordItem());
-        inventory.addItem(new BerriesItem());
-        inventory.addItem(new SwordItem());
-        inventory.addItem(new HammerItem());
+        inventory.addItem(new BerriesItem(1));
+        inventory.addItem(new DamageRingItem(1));
+        inventory.addItem(new SwordItem(1));
+        inventory.addItem(new GoblinEarItem(1));
+        inventory.addItem(new SwordItem(1));
+        inventory.addItem(new HammerItem(1));
+        inventory.addItem(new HeavyArmorItem(1));
 
     }
 
@@ -163,7 +165,7 @@ public class PlayerAppState extends BaseAppState {
         if (wish.lengthSquared() > 0f) {
             dir = computeWorldMove(wish).normalizeLocal();
         }
-        float speed = moveSpeed * (input.isSprinting() ? sprintMultiplier : 1f);
+        float speed = player.getMovementSpeed() * (input.isSprinting() ? sprintMultiplier : 1f);
         characterControl.setWalkDirection(dir.mult(speed));
 
         // jump
@@ -189,6 +191,19 @@ public class PlayerAppState extends BaseAppState {
         applyViewToCamera();
     }
 
+    public void moveToSpawn() {
+        if (this.characterControl == null){return;}
+        characterControl.setWalkDirection(Vector3f.ZERO);
+        characterControl.warp(spawnPosition);
+        // Reset look
+        this.pitch = -0.35f;
+        applyViewToCamera();
+    }
+
+    public void setSpawnPosition(Vector3f spawnPosition) {
+        this.spawnPosition = spawnPosition;
+    }
+
     private Vector3f computeWorldMove(Vector3f inputXZ) {
         // Build forward and left unit vectors from yaw
         float sinY = FastMath.sin(yaw);
@@ -210,7 +225,7 @@ public class PlayerAppState extends BaseAppState {
     }
 
     public void updateStats() {
-        player.setDamage(inventory.getStat(StatType.DAMAGE));
+        player.setBonusStats(inventory.getStats());
     }
 
     public void useItem(ConsumableItem item, GameCharacter target){

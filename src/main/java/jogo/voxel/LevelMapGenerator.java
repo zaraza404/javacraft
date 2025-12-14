@@ -25,7 +25,7 @@ public class LevelMapGenerator {
         random = new Random(seed);
 
         //Generate Rooms
-        generateRooms(9);
+        generateRooms(2);
 
         printMap();
         return mapLayout;
@@ -68,6 +68,8 @@ public class LevelMapGenerator {
         mapLayout[roomCenters[0][1]][roomCenters[0][0]] = '@';
 
         mapLayout[roomCenters[roomCenters.length-1][1]][roomCenters[roomCenters.length-1][0]] = 'D';
+
+        cleanWalls();
 
     }
 
@@ -155,45 +157,46 @@ public class LevelMapGenerator {
 
     private void connectTwoRooms(int x1, int z1, int x2, int z2){
 
-        boolean secretPassage = random.nextFloat() < 0.05f;
+        boolean secretPassage = random.nextFloat() < 0.1f;
 
-        int startX = Math.min(x1, x2);
-        int endX = Math.max(x1, x2);
-        for (int x = startX; x <= endX; x++){
-            if (x >= 0 && x < mapLayout[0].length && z1 >= 0 && z1 < mapLayout.length){
-                if (mapLayout[z1][x] == '#'){
-                    if (secretPassage){
-                        mapLayout[z1][x] = '~';
-                    } else {
-                        mapLayout[z1][x] = '=';
-                    }
+        int startX = Math.min(x1,x2);
+        int endX = Math.max(x1,x2);
+
+        for (int x = startX; x < endX; x++){
+            if (mapLayout[z1][x] == '#'){
+                if (secretPassage){
+                    mapLayout[z1][x] = '~';
                 } else {
-                    mapLayout[z1][x] = '.';
+                    mapLayout[z1][x] = '=';
                 }
+            } else {
+                mapLayout[z1][x] = '.';
             }
+
         }
 
-        int startZ = Math.min(z1, z2);
-        int endZ = Math.max(z1, z2);
-        for (int z = startZ; z <= endZ; z++){
-            if (x2 >= 0 && x2 < mapLayout[0].length && z >= 0 && z < mapLayout.length){
-                if (mapLayout[z][x2] == '#'){
-                    if (secretPassage){
-                        mapLayout[z][x2] = '~';
-                    } else {
-                        mapLayout[z][x2] = '=';
-                    }
+        int startZ= Math.min(z1,z2);
+        int endZ = Math.max(z1,z2);
+        for (int z = startZ; z < endZ; z++){
+            if (mapLayout[z][x2] == '#'){
+                if (secretPassage){
+                    mapLayout[z][x2] = '~';
+                } else {
+                    mapLayout[z][x2] = '=';
                 }
+
+            } else {
+                mapLayout[z][x2] = '.';
             }
+
         }
+
     }
 
     private void buildSpikePit(int posX, int posZ){
-        System.out.println("Hole at " + posX + " " + posZ);
         if (posX < mapLayout[0].length - 2 || posX > 2 || posZ < mapLayout.length - 2 || posZ > 2) {
             for (int z = posZ-1; z <= posZ+1; z++){
                 for (int x = posX-1; x <= posX+1; x++){
-                    System.out.println(x + " " + z);
                     if (mapLayout[z][x] != '#') {
                         mapLayout[z][x] = 'M';
                     }
@@ -203,7 +206,21 @@ public class LevelMapGenerator {
         }
     }
 
-
+    public void cleanWalls() {
+        for (int z = 1; z < mapLayout.length-1; z++) {
+            for (int x = 1; x < mapLayout[z].length-1; x++) {
+                if (mapLayout[z][x] == '#'){
+                    if (
+                            (mapLayout[z+1][x] == '#' || mapLayout[z+1][x] == ' ')
+                            && (mapLayout[z-1][x] == '#' || mapLayout[z-1][x] == ' ')
+                            && (mapLayout[z][x+1] == '#' || mapLayout[z][x+1] == ' ')
+                            && (mapLayout[z][x-1] == '#' || mapLayout[z][x-1] == ' ')){
+                        mapLayout[z][x] = ' ';
+                    }
+                }
+            }
+        }
+    }
 
     public void printMap() {
         for (int z = 0; z < mapLayout.length; z++) {

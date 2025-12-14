@@ -3,6 +3,7 @@ package jogo.gameobject;
 import jogo.engine.GameRegistry;
 import jogo.framework.math.Vec3;
 import jogo.gameobject.character.Player;
+import jogo.gameobject.object.PickableItem;
 
 import java.util.HashMap;
 
@@ -32,6 +33,14 @@ public class GameObjectSpawner {
             registry.add(obj);
         }
         return obj;
+    }
+
+    public GameObject spawnDropItem(int itemTypeId, Vec3 pos){
+        PickableItem item = new PickableItem(itemTypeId);
+        item.setPosition(pos);
+        registry.add(item);
+
+        return item;
     }
 
     public void SpawnObjects(HashMap<Vec3, Integer> objects){

@@ -10,8 +10,8 @@ public abstract class PotionItem extends ConsumableItem {
     Timer timer;
     float effect_duration;
 
-    public PotionItem(String itemName, String texturePath, float effect_duration){
-        super(itemName, texturePath);
+    public PotionItem(String itemName, String texturePath, float effect_duration, int level){
+        super(itemName, texturePath, level);
         this.effect_duration = effect_duration;
         timer = new Timer(effect_duration);
     }

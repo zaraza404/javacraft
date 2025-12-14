@@ -14,10 +14,9 @@ public class PickableItem extends GameObject {
     InventoryItem item;
     boolean pickedUp = false;
 
-    public PickableItem(int itemId) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public PickableItem(int itemId){
         super("Pickable Item");
         this.item = InventoryItemRegistry.defaultPalette().get(itemId);
-
     }
 
     public InventoryItem pickUp(){
@@ -25,7 +24,6 @@ public class PickableItem extends GameObject {
     }
 
     public float getOffcet(float tpf){
-
         posOffcet += tpf;
         return (float) Math.sin(posOffcet)/10;
     }

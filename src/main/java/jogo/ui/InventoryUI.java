@@ -3,6 +3,7 @@ package jogo.ui;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector2f;
+import com.jme3.texture.Texture;
 import com.jme3.ui.Picture;
 import jogo.appstate.HudAppState;
 import jogo.appstate.InputAppState;
@@ -96,6 +97,7 @@ public class InventoryUI extends UserInterface{
             }
             ClickablePicture equipmentItem = new ClickablePicture("Inventory Item " + i);
             equipmentItem.setImage(assetManager, item.getTexturePath(), true);
+            equipmentItem.getMaterial().getTextureParam("Texture").getTextureValue().setMagFilter(Texture.MagFilter.Nearest);
             equipmentItem.setHeight(64f);
             equipmentItem.setWidth(64f);
             this.attachChild(equipmentItem);
@@ -110,6 +112,7 @@ public class InventoryUI extends UserInterface{
             }
             ClickablePicture inventoryItem = new ClickablePicture("Inventory Item " + i);
             inventoryItem.setImage(assetManager, item.getTexturePath(), true);
+            inventoryItem.getMaterial().getTextureParam("Texture").getTextureValue().setMagFilter(Texture.MagFilter.Nearest);
             inventoryItem.setHeight(64f);
             inventoryItem.setWidth(64f);
             this.attachChild(inventoryItem);
@@ -279,6 +282,7 @@ public class InventoryUI extends UserInterface{
         }
 
     }
+
 
     private void snapToSlot(ClickablePicture draggable, ClickablePicture slot){
         if (draggable == null){

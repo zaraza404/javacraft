@@ -3,5 +3,7 @@ package jogo.systems;
 public enum StatType {
     HEALTH,
     DAMAGE,
-    DEFENCE
+    ATTACKSPEED,
+    DEFENCE,
+    MOVEMENTSPEED
 }

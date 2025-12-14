@@ -5,11 +5,13 @@ public abstract class InventoryItem {
     private String texturePath;
     private String hint = "";
     private ItemType itemType;
+    protected int level;
 
-    public InventoryItem(String itemName, String texturePath, ItemType itemType) {
+    public InventoryItem(String itemName, String texturePath, ItemType itemType, int level) {
         this.itemName = itemName;
         this.texturePath = texturePath;
         this.itemType = itemType;
+        this.level = level;
     }
 
     public String getTexturePath(){

@@ -4,14 +4,15 @@ import jogo.appstate.WorldAppState;
 import jogo.framework.math.Vec3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 public abstract class NonPlayebleGameCharacter extends GameCharacter {
-    protected float speed = 50f;
     protected Vec3 target_position = position;
     protected ArrayList<Vec3> path;
+    protected int[] dropTable = new int[]{0};
 
-
-    public NonPlayebleGameCharacter(String name) {
+    public NonPlayebleGameCharacter(String name){
         super(name);
         path = new ArrayList<>();
     }
@@ -24,7 +25,7 @@ public abstract class NonPlayebleGameCharacter extends GameCharacter {
         Vec3 xz_vec = position.getVectorTo(target_position);
         xz_vec.set(xz_vec.x, 0, xz_vec.z);
         Vec3 dir = xz_vec.getNormalized();
-        dir = dir.scaleBy(speed * tpf);
+        dir = dir.scaleBy(this.getMovementSpeed());
         return dir;
     }
 
@@ -40,6 +41,14 @@ public abstract class NonPlayebleGameCharacter extends GameCharacter {
         }
 
 
+    }
+
+    public void setDropItemsTable(int[] dropTable){
+        this.dropTable = dropTable;
+    }
+
+    public int getDropId(){
+        return dropTable[new Random().nextInt(dropTable.length)];
     }
 
     public void onArrivedAtPos(){

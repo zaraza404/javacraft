@@ -144,4 +144,6 @@ public class Chunk {
         byte id = vox[lx][ly][lz];
         return id != VoxelPalette.AIR_ID && palette.get(id).isSolid();
     }
+
+
 }

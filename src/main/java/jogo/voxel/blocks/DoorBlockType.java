@@ -10,6 +10,6 @@ public class DoorBlockType extends TexturedVoxelBlockType {
     @Override
     public boolean interact(){
         System.out.println("Next Level Reached");
-        return  true;
+        return true;
     }
 }
