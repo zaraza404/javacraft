@@ -18,14 +18,20 @@ public class WeaponModel extends Node {
     Timer attackTimer = new Timer(0.1f);
     public WeaponModel(AssetManager assetManager){
         this.assetManager = assetManager;
-        setWeaponModel("Models/sword.glb");
+        setWeaponModel("Models/club.glb");
     }
 
     public void setWeaponModel(String weaponModelPath){
-        weaponSpatial = assetManager.loadModel(weaponModelPath);
+        if (weaponSpatial != null){
+            weaponSpatial.removeFromParent();
+        }
 
-        weaponSpatial.scale(0.0833333f);
+        weaponSpatial = assetManager.loadModel(weaponModelPath);
+        weaponSpatial.setLocalTranslation(0,0.2f,0);
+        weaponSpatial.scale(0.86666f);
         attachChild(weaponSpatial);
+
+
     }
 
     public void update(float tpf){
@@ -33,14 +39,14 @@ public class WeaponModel extends Node {
 
         if (attackTimer.isFinished() && !weaponUp){
             weaponUp = true;
-            weaponSpatial.rotate(new Quaternion().fromAngleAxis(-(float) Math.PI/8, Vector3f.UNIT_Z));
+            weaponSpatial.rotate(new Quaternion().fromAngleAxis(-(float) Math.PI/4, Vector3f.UNIT_Z));
         }
     }
 
     public void startAttack(){
         if (!weaponUp) return;
         attackTimer.start();
-        weaponSpatial.rotate(new Quaternion().fromAngleAxis((float) Math.PI/8, Vector3f.UNIT_Z));
+        weaponSpatial.rotate(new Quaternion().fromAngleAxis((float) Math.PI/4, Vector3f.UNIT_Z));
         weaponUp = false;
     }
 }

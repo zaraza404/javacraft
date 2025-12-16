@@ -49,22 +49,32 @@ public class LevelMap {
 
     private HashMap<java.lang.Character, byte[][]> layout_dictionary= new HashMap<>();
 
-    public LevelMap(String name, int seed){
+    public LevelMap(String name, int seed, int floor){
         this.name = name;
 
-        this.map_layout = new LevelMapGenerator().generateMap(seed);
+        this.map_layout = new LevelMapGenerator().generateMap(seed, floor);
         this.dimensions = new int[]{map_layout.length,map_layout[0].length,8};
-        layout_dictionary.put(' ', new byte[][]{{0, 0, 0, 0, 0, 0, 0, 5},{}});
+        layout_dictionary.put(' ', new byte[][]{{0, 0, 0, 0, 0, 0, 0, 0},{}});
+
         layout_dictionary.put('E', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{}});
-        layout_dictionary.put('L', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{0,0,0,0,3,0,0,0}});
+        layout_dictionary.put('B', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{0,0,0,0,3,0,0,0}});
+        layout_dictionary.put('R', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{0,0,0,0,4,0,0,0}});
+        layout_dictionary.put('H', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{0,0,0,0,5,0,0,0}});
+        layout_dictionary.put('C', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{0,0,0,0,6,0,0,0}});
+
         layout_dictionary.put('.', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{}});
         layout_dictionary.put('#', new byte[][]{{3, 3, 3, 3, 2, 2, 2, 2},{}});
-        layout_dictionary.put('~', new byte[][]{{3, 3, 3, 3, 4, 2, 2, 2},{}});
-        layout_dictionary.put('M', new byte[][]{{3, 3, 0, 0, 0, 0, 2, 2},{0,0,2,0,0,0,0,0}});
-        layout_dictionary.put('T', new byte[][]{{3, 3, 3, 3, 2, 2, 2, 2},{0,0,0,0,1,0,0,0}});
         layout_dictionary.put('=', new byte[][]{{3, 3, 3, 3, 0, 2, 2, 2},{}});
-        layout_dictionary.put('D', new byte[][]{{3, 3, 3, 3, 5, 2, 2, 2},{}});
+        layout_dictionary.put('~', new byte[][]{{3, 3, 3, 3, 4, 2, 2, 2},{}});
+
+        layout_dictionary.put('m', new byte[][]{{3, 0, 0, 0, 0, 0, 2, 2},{0,2,0,0,0,0,0,0}});
+        layout_dictionary.put('M', new byte[][]{{3, 0, 0, 6, 0, 0, 2, 2},{0,2,0,0,0,0,0,0}});
+        layout_dictionary.put('T', new byte[][]{{3, 3, 3, 3, 2, 2, 2, 2},{0,0,0,0,1,0,0,0}});
+
+
         layout_dictionary.put('_', new byte[][]{{3, 3, 3, 0, 0, 0, 2, 2},{}});
+
+        layout_dictionary.put('D', new byte[][]{{3, 3, 3, 3, 5, 2, 2, 2},{}});
         layout_dictionary.put('@', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{}});
     }
 

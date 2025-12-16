@@ -1,18 +1,19 @@
-package jogo.gameobject.character;
+package jogo.gameobject.character.enemygamecharacter;
 
-import com.jme3.anim.AnimComposer;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import jogo.appstate.WorldAppState;
+import jogo.gameobject.character.NonPlayebleGameCharacter;
+import jogo.systems.StatType;
 import jogo.util.WeaponModel;
 
-public class EnemyGameCharacter extends NonPlayebleGameCharacter {
+public abstract class EnemyGameCharacter extends NonPlayebleGameCharacter {
 
-
-    public EnemyGameCharacter(String name){ super(name); }
+    int level;
+    public EnemyGameCharacter(String name, int level){ super(name); }
 
 
     @Override
@@ -26,10 +27,11 @@ public class EnemyGameCharacter extends NonPlayebleGameCharacter {
         Spatial model = assetManager.loadModel("Models/bob.glb");
         model.scale(0.16666f);
         weapon = new WeaponModel(assetManager);
-        weapon.setLocalTranslation(new Vector3f(0.4f,0.2f,0.4f));
-        weapon.setLocalRotation(new Quaternion().fromAngleAxis((float)(Math.PI/2), Vector3f.UNIT_Y));
+        weapon.setLocalTranslation(new Vector3f(0.35f,0.2f,0.35f));
+        weapon.setLocalRotation(new Quaternion().fromAngleAxis((float)(Math.PI/1.8), Vector3f.UNIT_Y));
         node.attachChild(model);
         node.attachChild(weapon);
         return node;
     }
+
 }

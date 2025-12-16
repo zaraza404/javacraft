@@ -6,20 +6,19 @@ import jogo.systems.inventoryitem.ItemType;
 import jogo.systems.inventoryitem.InventoryItem;
 import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
 import jogo.systems.inventoryitem.equipmentitem.EquipmentItem;
+import jogo.systems.inventoryitem.equipmentitem.weapon.WeaponItem;
 
 import java.util.HashMap;
 
 public class Inventory {
     private InventoryItem[] equipmentItems;
     private InventoryItem[] inventoryItems;
-    private int[] inventoryItemsCount;
     private int size;
 
 
     public Inventory(int size){
         equipmentItems = new InventoryItem[ItemType.values().length - 1];
         inventoryItems = new InventoryItem[size];
-        inventoryItemsCount = new int[size];
         this.size = size;
     }
 
@@ -42,9 +41,15 @@ public class Inventory {
         return false;
     }
 
+    public boolean addItem(InventoryItem newItem, int pos){
+        inventoryItems[pos] = newItem;
+        return false;
+    }
+
     public void removeInventoryItemAt(int itemPos){
         inventoryItems[itemPos] = null;
     }
+
     public void removeEquipmentItemAt(int itemPos){
         equipmentItems[itemPos] = null;
     }
@@ -144,6 +149,13 @@ public class Inventory {
         }
 
         return stats;
+    }
+
+    public String getWeaponModel(){
+        if (equipmentItems[0]!= null){
+            return (((WeaponItem)(equipmentItems[0])).getModelPath());
+        }
+        return ("Models/fist.glb");
     }
 
 

@@ -1,6 +1,8 @@
 package jogo.ui;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector2f;
+import com.jme3.scene.Node;
 import com.jme3.ui.Picture;
 
 public class ClickablePicture extends Picture {
@@ -16,7 +18,7 @@ public class ClickablePicture extends Picture {
         float bottom_border = getWorldTranslation().y;
 
         if ((clickPosition.x > left_border && clickPosition.x < right_border)
-            && (clickPosition.y > bottom_border && clickPosition.y < top_border)){
+                && (clickPosition.y > bottom_border && clickPosition.y < top_border)){
             System.out.println("Clicked " + name);
 
             return true;

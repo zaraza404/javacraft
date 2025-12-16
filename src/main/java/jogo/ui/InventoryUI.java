@@ -15,13 +15,13 @@ import jogo.systems.inventoryitem.equipmentitem.EquipmentItem;
 
 public class InventoryUI extends UserInterface{
 
-    private ClickablePicture[] equipmentIcons;
+    private InventoryIcon[] equipmentIcons;
     private ClickablePicture[] equipmentSlots;
 
-    private ClickablePicture[] inventoryIcons;
+    private InventoryIcon[] inventoryIcons;
     private ClickablePicture[] inventorySlots;
 
-    private ClickablePicture draggedIcon;
+    private InventoryIcon draggedIcon;
     private int draggedId = -1;
     private boolean isDraggedfromInventory = false;
     private int itemsInARaw = 4;
@@ -43,10 +43,10 @@ public class InventoryUI extends UserInterface{
         int y = sapp.getCamera().getHeight()/2;
 
         inventory = player.getInventory();
-        inventoryIcons = new ClickablePicture[inventory.getInventoryItems().length];
+        inventoryIcons = new InventoryIcon[inventory.getInventoryItems().length];
         inventorySlots = new ClickablePicture[inventory.getInventoryItems().length];
 
-        equipmentIcons = new ClickablePicture[inventory.getEquipmentItems().length];
+        equipmentIcons = new InventoryIcon[inventory.getEquipmentItems().length];
         equipmentSlots = new ClickablePicture[inventory.getEquipmentItems().length];
 
         Picture inventoryBackground = new Picture("Inventory Background");
@@ -95,11 +95,7 @@ public class InventoryUI extends UserInterface{
             if (item == null) {
                 continue;
             }
-            ClickablePicture equipmentItem = new ClickablePicture("Inventory Item " + i);
-            equipmentItem.setImage(assetManager, item.getTexturePath(), true);
-            equipmentItem.getMaterial().getTextureParam("Texture").getTextureValue().setMagFilter(Texture.MagFilter.Nearest);
-            equipmentItem.setHeight(64f);
-            equipmentItem.setWidth(64f);
+            InventoryIcon equipmentItem = new InventoryIcon("Inventory Item " + i, assetManager, item.getTexturePath(), item.getLevel());
             this.attachChild(equipmentItem);
             equipmentIcons[i] = equipmentItem;
             snapToSlot(equipmentItem, equipmentSlots[i]);
@@ -110,11 +106,7 @@ public class InventoryUI extends UserInterface{
             if (item == null) {
                 continue;
             }
-            ClickablePicture inventoryItem = new ClickablePicture("Inventory Item " + i);
-            inventoryItem.setImage(assetManager, item.getTexturePath(), true);
-            inventoryItem.getMaterial().getTextureParam("Texture").getTextureValue().setMagFilter(Texture.MagFilter.Nearest);
-            inventoryItem.setHeight(64f);
-            inventoryItem.setWidth(64f);
+            InventoryIcon inventoryItem = new InventoryIcon("Inventory Item " + i, assetManager, item.getTexturePath(), item.getLevel());
             this.attachChild(inventoryItem);
             inventoryIcons[i] = inventoryItem;
             snapToSlot(inventoryItem, inventorySlots[i]);
@@ -127,7 +119,7 @@ public class InventoryUI extends UserInterface{
         Vector2f mouse_pos = input.getMousePosition();
 
         if (draggedIcon != null){
-            draggedIcon.setPosition(mouse_pos.x - draggedIcon.getWidth()/2f, mouse_pos.y - draggedIcon.getHeight()/2f);
+            draggedIcon.setLocalTranslation(mouse_pos.x - draggedIcon.getPicture().getWidth() / 2f, mouse_pos.y - draggedIcon.getPicture().getHeight() / 2f, 0);
         }
 
         if (input.consumeUseRequested()){
@@ -135,7 +127,7 @@ public class InventoryUI extends UserInterface{
                 if (inventoryIcons[i] == null){
                     continue;
                 }
-                if (!inventoryIcons[i].checkClick(mouse_pos)){
+                if (!inventoryIcons[i].getPicture().checkClick(mouse_pos)){
                     continue;
                 }
 
@@ -166,7 +158,7 @@ public class InventoryUI extends UserInterface{
                     if (inventoryIcons[i] == null){
                         continue;
                     }
-                    if (inventoryIcons[i].checkClick(mouse_pos) && inventorySlots[i].checkClick(mouse_pos)){
+                    if (inventoryIcons[i].getPicture().checkClick(mouse_pos) && inventorySlots[i].checkClick(mouse_pos)){
                         draggedIcon = inventoryIcons[i];
                         draggedId = i;
                         isDraggedfromInventory = true;
@@ -179,7 +171,7 @@ public class InventoryUI extends UserInterface{
                     if (equipmentIcons[i] == null){
                         continue;
                     }
-                    if (equipmentIcons[i].checkClick(mouse_pos) && equipmentSlots[i].checkClick(mouse_pos)){
+                    if (equipmentIcons[i].getPicture().checkClick(mouse_pos) && equipmentSlots[i].checkClick(mouse_pos)){
                         draggedIcon = equipmentIcons[i];
                         draggedId = i;
                         isDraggedfromInventory = false;
@@ -223,7 +215,7 @@ public class InventoryUI extends UserInterface{
                     else {
                         inventory.moveItem(draggedId,target_invenory_slot);
 
-                        ClickablePicture target_icon = inventoryIcons[target_invenory_slot];
+                        InventoryIcon target_icon = inventoryIcons[target_invenory_slot];
 
                         inventoryIcons[target_invenory_slot] = draggedIcon;
                         inventoryIcons[draggedId] = target_icon;
@@ -241,21 +233,33 @@ public class InventoryUI extends UserInterface{
                     if (isDraggedfromInventory) {
                         if(inventory.equipItem(draggedId, target_equipment_slot)){
                             equipItem(draggedId,target_equipment_slot);
-                            /*ClickablePicture target_icon = equipmentIcons[target_equipment_slot];
-
-                            equipmentIcons[target_equipment_slot] = draggedIcon;
-                            inventoryIcons[draggedId] = target_icon;
-
-                            snapToSlot(draggedIcon, equipmentSlots[target_equipment_slot]);
-                            snapToSlot(target_icon, inventorySlots[draggedId]);
-*/
                             is_icon_moved = true;
                         }
                     }
                 }
 
                 if (!is_icon_moved){
-                    snapDraggedBack();
+                    System.out.println(mouse_pos.x);
+                    if (
+                            mouse_pos.x < 416 ||
+                            mouse_pos.x > 864 ||
+                            mouse_pos.y < 168 ||
+                            mouse_pos.y > 552
+                    )
+                    {
+                        draggedIcon.removeFromParent();
+
+                        if(!isDraggedfromInventory){
+                            player.dropItem(inventory.getEquipmentItem(draggedId));
+                            inventory.removeEquipmentItemAt(draggedId);
+                        } else {
+                            player.dropItem(inventory.getInventoryItem(draggedId));
+                            inventory.removeInventoryItemAt(draggedId);
+                        }
+                    } else {
+                        snapDraggedBack();
+                    }
+
                 }
 
                 draggedIcon = null;
@@ -267,8 +271,8 @@ public class InventoryUI extends UserInterface{
     }
 
     private void equipItem(int inventoryPos, int equipmentPos){
-        ClickablePicture equipmentIcon = equipmentIcons[equipmentPos];
-        ClickablePicture inventoryIcon = inventoryIcons[inventoryPos];
+        InventoryIcon equipmentIcon = equipmentIcons[equipmentPos];
+        InventoryIcon inventoryIcon = inventoryIcons[inventoryPos];
 
         equipmentIcons[equipmentPos] = inventoryIcon;
         inventoryIcons[inventoryPos] = equipmentIcon;
@@ -284,11 +288,11 @@ public class InventoryUI extends UserInterface{
     }
 
 
-    private void snapToSlot(ClickablePicture draggable, ClickablePicture slot){
+    private void snapToSlot(InventoryIcon draggable, ClickablePicture slot){
         if (draggable == null){
             return;
         }
-        draggable.setPosition(slot.getWorldTranslation().x + 8, slot.getWorldTranslation().y + 8);
+        draggable.setLocalTranslation(slot.getWorldTranslation().x + 8, slot.getWorldTranslation().y + 8, 0);
     }
 
     private void snapDraggedBack(){

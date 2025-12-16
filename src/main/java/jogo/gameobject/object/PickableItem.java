@@ -14,9 +14,9 @@ public class PickableItem extends GameObject {
     InventoryItem item;
     boolean pickedUp = false;
 
-    public PickableItem(int itemId){
+    public PickableItem(int itemId, int level){
         super("Pickable Item");
-        this.item = InventoryItemRegistry.defaultPalette().get(itemId);
+        this.item = InventoryItemRegistry.defaultPalette().get(itemId, level);
     }
 
     public InventoryItem pickUp(){

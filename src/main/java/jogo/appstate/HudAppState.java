@@ -19,7 +19,8 @@ public class HudAppState extends BaseAppState {
 
     enum UIType{
         OVERLAY,
-        INVENTORY
+        INVENTORY,
+        GAMEOVER
     }
 
     public HudAppState(Node guiNode, AssetManager assetManager, PlayerAppState player, InputAppState input) {
@@ -44,6 +45,7 @@ public class HudAppState extends BaseAppState {
         UserInterface newUI = switch (newUIType) {
             case OVERLAY -> new OverlayUI(assetManager, this, input, player);
             case INVENTORY -> new InventoryUI(assetManager, this, input, player);
+            case GAMEOVER -> new GameOverUI(assetManager, this, input, player);
         };
 
         if (newUI != null){
@@ -60,6 +62,9 @@ public class HudAppState extends BaseAppState {
             } else {
                 changeUI(UIType.INVENTORY);
             }
+        }
+        if (player.getPlayer().getHealth() <= 0){
+            changeUI(UIType.GAMEOVER);
         }
         if (currentUI != null){
             currentUI.update(tpf);

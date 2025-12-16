@@ -13,6 +13,6 @@ public abstract class FoodItem extends ConsumableItem {
 
 
     public void use(GameCharacter target) {
-        target.addHealth(restorationAmount);
+        target.addHealth(restorationAmount * (1 + (level * 0.2f)));
     }
 }

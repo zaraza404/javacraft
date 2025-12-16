@@ -71,7 +71,6 @@ public abstract class GameCharacter extends GameObject {
 
     public void loadStats(){
         this.maxHealth = baseStats.get(StatType.HEALTH) + bonusStats.get(StatType.HEALTH);
-        this.health = this.maxHealth;
         this.damage = baseStats.get(StatType.DAMAGE) + bonusStats.get(StatType.DAMAGE);
         this.defence = baseStats.get(StatType.DEFENCE) + bonusStats.get(StatType.DEFENCE);
         this.attackSpeed = baseStats.get(StatType.ATTACKSPEED) + bonusStats.get(StatType.ATTACKSPEED);

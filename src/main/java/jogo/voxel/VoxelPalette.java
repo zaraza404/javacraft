@@ -30,7 +30,8 @@ public class VoxelPalette {
         p.register(new StoneWallBlockType());// id 2
         p.register(new StoneFloorBlockType());   // id 3
         p.register(new CrackedStoneWallBlockType()); // id 4
-        p.register(new DoorBlockType()); // id 4
+        p.register(new DoorBlockType()); // id 5
+        p.register(new BridgeBlockType()); //id 6
         return p;
     }
 

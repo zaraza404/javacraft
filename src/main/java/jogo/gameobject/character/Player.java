@@ -12,7 +12,8 @@ public class Player extends GameCharacter implements Comparable<Player>{
     public int score = 2;
     public Player() {
         super("Player");
-        setBaseStat(StatType.MOVEMENTSPEED, 2f);
+        setBaseStat(StatType.MOVEMENTSPEED, 1.5f);
+        setBaseStat(StatType.ATTACKSPEED, 2f);
     }
 
     public int compareTo(Player score){
@@ -21,6 +22,11 @@ public class Player extends GameCharacter implements Comparable<Player>{
 
     public void setWeapon(WeaponModel weapon){
         this.weapon = weapon;
+    }
+
+    public void setWeaponModel(String weaponModelPath) {
+        System.out.println(weaponModelPath);
+        this.weapon.setWeaponModel(weaponModelPath);
     }
 
 

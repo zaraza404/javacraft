@@ -10,7 +10,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.collision.CollisionResults;
 import jogo.engine.RenderIndex;
 import jogo.gameobject.GameObject;
-import jogo.gameobject.character.EnemyGameCharacter;
+import jogo.gameobject.character.enemygamecharacter.EnemyGameCharacter;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.object.PickableItem;
 import jogo.voxel.VoxelWorld;

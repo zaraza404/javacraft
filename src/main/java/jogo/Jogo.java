@@ -14,14 +14,11 @@ import jogo.appstate.RenderAppState;
 import jogo.appstate.InteractionAppState;
 import jogo.engine.GameRegistry;
 import jogo.engine.RenderIndex;
-import jogo.framework.math.Vec3;
-import jogo.gameobject.character.EnemyGameCharacter;
-import jogo.gameobject.character.LeatherGoblin;
+import jogo.gameobject.character.enemygamecharacter.GoblinRogue;
 import jogo.gameobject.object.PickableItem;
-import jogo.gameobject.object.Spikes;
 import jogo.gameobject.GameObjectSpawner;
-
-import java.lang.reflect.InvocationTargetException;
+import jogo.systems.gamesave.GameLoad;
+import jogo.systems.gamesave.GameSaveData;
 
 /**
  * Main application entry.
@@ -38,6 +35,8 @@ public class Jogo extends SimpleApplication {
         settings.setGammaCorrection(true);// enable sRGB gamma-correct rendering
         settings.setFullscreen(false);
         app.setSettings(settings);
+        app.setDisplayFps(false);
+        app.setDisplayStatView(false);
         app.start();
         app.getInputManager().getCursorPosition();
 
@@ -58,6 +57,9 @@ public class Jogo extends SimpleApplication {
         bulletAppState.setDebugEnabled(false); // toggle off later
         PhysicsSpace physicsSpace = bulletAppState.getPhysicsSpace();
 
+        // Load Save File if possible
+        GameSaveData gameSaveData = new GameLoad().loadGameData();
+
         // AppStates (order matters a bit: input -> world -> render -> interaction -> player)
         InputAppState input = new InputAppState();
         stateManager.attach(input);
@@ -66,12 +68,21 @@ public class Jogo extends SimpleApplication {
         GameRegistry registry = new GameRegistry();
         RenderIndex renderIndex = new RenderIndex();
         WorldAppState world = new WorldAppState(rootNode, assetManager, registry, physicsSpace, cam, input);
+
+        if (gameSaveData != null){
+            world.loadSaveData(gameSaveData.getSeed(), gameSaveData.getFloor());
+        }
+
+
         stateManager.attach(world);
 
         stateManager.attach(new RenderAppState(rootNode, assetManager, registry, renderIndex, world));
 
         PlayerAppState player = new PlayerAppState(rootNode, assetManager, cam, input, physicsSpace, world);
 
+        if (gameSaveData != null) {
+            player.loadSaveData(gameSaveData.getHealth(), gameSaveData.getEquipment(), gameSaveData.getInventory());
+        }
         stateManager.attach(new InteractionAppState(rootNode, cam, input, renderIndex, world, player));
 
         GameObjectSpawner spawner = GameObjectSpawner.getInstance(registry);
@@ -87,12 +98,7 @@ public class Jogo extends SimpleApplication {
 
 
 
-        LeatherGoblin enemy = new LeatherGoblin();
-        enemy.setPosition(7.5f, 4.0f, 7.5f);
-        registry.add(enemy);
-
-
-        PickableItem item = new PickableItem((byte) 0);
+        PickableItem item = new PickableItem((byte) 0, 1);
         item.setPosition(2.1f, 4.0f, 2.1f);
         registry.add(item);
 

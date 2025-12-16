@@ -1,4 +1,4 @@
-package jogo.gameobject.character;
+package jogo.gameobject.character.enemygamecharacter;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Quaternion;
@@ -6,13 +6,21 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import jogo.appstate.WorldAppState;
+import jogo.systems.StatType;
 import jogo.util.WeaponModel;
 
-public class LeatherGoblin extends EnemyGameCharacter{
+public class GoblinBrute extends EnemyGameCharacter{
 
-    public LeatherGoblin(){
-        super("Leather Goblin");
-        setDropItemsTable(new int[]{4,8,12});
+    public GoblinBrute(int level){
+        super("Brute", level);
+        setDropItemsTable(new int[]{1,7,11,13,17});
+        setBaseStat(StatType.DAMAGE, 2f + (this.level * 1f));
+        setBaseStat(StatType.HEALTH, 8f + (this.level * 6f));
+        setBaseStat(StatType.DEFENCE, 1f + (this.level * 0.5f));
+        setBaseStat(StatType.ATTACKSPEED, 0.8f + (this.level * 0.1f));
+        setBaseStat(StatType.MOVEMENTSPEED, 0.8f);
+        loadStats();
+        this.setHealth(this.getMaxHealth());
     }
 
 
@@ -25,7 +33,7 @@ public class LeatherGoblin extends EnemyGameCharacter{
     public Spatial getSpatial(AssetManager assetManager){
 
         Node node = new Node();
-        Spatial model = assetManager.loadModel("Models/lether_goblin.glb");
+        Spatial model = assetManager.loadModel("Models/brute_goblin.glb");
         model.scale(0.5f);
         model.setLocalRotation(new Quaternion().fromAngleAxis((float)(-Math.PI/2), Vector3f.UNIT_Y));
         weapon = new WeaponModel(assetManager);
@@ -34,6 +42,7 @@ public class LeatherGoblin extends EnemyGameCharacter{
         weapon.setLocalRotation(new Quaternion().fromAngleAxis((float)(Math.PI/2), Vector3f.UNIT_Y));
         node.attachChild(model);
         node.attachChild(weapon);
+        weapon.setWeaponModel("Models/battlehammer.glb");
         return node;
 
     }

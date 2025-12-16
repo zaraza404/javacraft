@@ -7,7 +7,6 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -20,8 +19,7 @@ import jogo.gameobject.GameObjectSpawner;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.character.NonPlayebleGameCharacter;
 import jogo.gameobject.object.AffectObject;
-import jogo.gameobject.object.PickableItem;
-import jogo.gameobject.object.Spikes;
+import jogo.systems.gamesave.GameSave;
 import jogo.util.pathfinding.Pathfinding;
 import jogo.voxel.LevelMap;
 import jogo.voxel.VoxelBlockType;
@@ -30,6 +28,7 @@ import jogo.voxel.blocks.DoorBlockType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class WorldAppState extends BaseAppState {
 
@@ -49,8 +48,8 @@ public class WorldAppState extends BaseAppState {
     private HashMap<NonPlayebleGameCharacter, BetterCharacterControl> npcControls = new HashMap<>();
     private Pathfinding pathfinding;
 
-    private int currentDifficulty = 1;
-    private int currentSeed = 1;
+    private int dungeonFloor = 0;
+    private int dungeonSeed = new Random().nextInt();
 
     public WorldAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, PhysicsSpace physicsSpace, Camera cam, InputAppState input) {
         this.rootNode = rootNode;
@@ -60,6 +59,11 @@ public class WorldAppState extends BaseAppState {
         this.cam = cam;
         this.input = input;
         this.pathfinding = new Pathfinding();
+    }
+
+    public void loadSaveData(int dungeonSeed, int dungeonFloor){
+        this.dungeonSeed = dungeonSeed;
+        this.dungeonFloor = dungeonFloor;
     }
 
     public void registerPlayerAppState(PlayerAppState playerAppState) {
@@ -82,7 +86,7 @@ public class WorldAppState extends BaseAppState {
         worldNode.attachChild(voxelWorld.getNode());
 
 
-        loadLevel(1,currentSeed);
+        loadLevel(dungeonFloor,dungeonSeed + dungeonFloor);
 
 
 
@@ -143,7 +147,10 @@ public class WorldAppState extends BaseAppState {
                 if (chr instanceof NonPlayebleGameCharacter npc){
                     if (npc.getHealth() <= 0.0f) {
                         registry.startRemove(npc);
-                        GameObjectSpawner.getInstance().spawnDropItem(npc.getDropId(), npc.getPosition());
+                        int dropId = npc.getDropId();
+                        if (dropId >= 0){
+                            GameObjectSpawner.getInstance().spawnDropItem(npc.getDropId(), dungeonFloor, npc.getPosition());
+                        }
                         continue;
                     }
 
@@ -192,9 +199,8 @@ public class WorldAppState extends BaseAppState {
     public boolean interactWithBlockAt(VoxelWorld.Vector3i cell){
         VoxelBlockType block = voxelWorld.getPalette().get(voxelWorld.getBlock(cell.x, cell.y, cell.z));
         if (block instanceof DoorBlockType){
-            currentSeed += 1;
-            currentDifficulty += 1;
-            loadLevel(currentDifficulty, currentSeed);
+            dungeonFloor += 1;
+            loadLevel(dungeonFloor, dungeonSeed + dungeonFloor);
         }
         return block.interact();
     }
@@ -203,18 +209,34 @@ public class WorldAppState extends BaseAppState {
         for (GameObject obj : registry.getAll()){
             registry.startRemove(obj);
         }
-        LevelMap level = new LevelMap("level1", levelSeed);
+        LevelMap level = new LevelMap("Floor " + dungeonFloor, levelSeed, dungeonFloor);
         byte[][][] level_block_layout= level.getMapBlockLayout();
+
         voxelWorld.generateLayers(level_block_layout);
         voxelWorld.buildMeshes();
         voxelWorld.clearAllDirtyFlags();
         voxelWorld.buildPhysics(physicsSpace);
-        GameObjectSpawner.getInstance().SpawnObjects(level.getGameObjectsLayout());
+        GameObjectSpawner.getInstance().SpawnObjects(level.getGameObjectsLayout(),dungeonFloor);
 
         voxelWorld.setRecommendedSpawn(new Vector3f(level.getSpawn()[0] + 0.5f, 4f, level.getSpawn()[1] + 0.5f));
         playerAppState.setSpawnPosition(voxelWorld.getRecommendedSpawn());
         playerAppState.moveToSpawn();
 
+        saveGame();
+
+    }
+
+    public void saveGame(){
+        if (playerAppState.getPlayer() == null || playerAppState.getInventory() == null) return;
+        new GameSave().saveGame(dungeonSeed, dungeonFloor, playerAppState.getPlayer().getHealth(), playerAppState.getInventory().getEquipmentItems(), playerAppState.getInventory().getInventoryItems());
+    }
+
+    public void deleteSave(){
+        new GameSave().deleteSave();
+    }
+
+    public int getDungeonFloor(){
+        return dungeonFloor;
     }
 
     @Override

@@ -15,13 +15,14 @@ public abstract class EquipmentItem extends InventoryItem {
         for (StatType s: StatType.values()){
             stats.put(s, 0.0f);
         }
+
     }
 
     public float getStat(StatType statType) {
         return stats.get(statType);
     }
 
-    public void setStat(StatType stat, float value){
-        stats.put(stat, value * this.level);
+    public void setStat(StatType stat, float value, float levelValue){
+        stats.put(stat, value + (levelValue * this.level));
     }
 }

@@ -25,4 +25,6 @@ public abstract class InventoryItem {
     public ItemType getItemType(){
         return itemType;
     }
+
+    public int getLevel() {return level;}
 }

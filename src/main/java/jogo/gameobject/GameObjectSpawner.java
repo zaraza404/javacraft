@@ -26,8 +26,8 @@ public class GameObjectSpawner {
         return instance;
     }
 
-    public GameObject spawnGameObject(int id, Vec3 pos){
-        GameObject obj = GameObjectRegistry.defaultPalette().get(id);
+    public GameObject spawnGameObject(int id, int level, Vec3 pos){
+        GameObject obj = GameObjectRegistry.defaultPalette().get(id, level);
         obj.setPosition(pos);
         if (!(obj instanceof Player)){
             registry.add(obj);
@@ -35,17 +35,17 @@ public class GameObjectSpawner {
         return obj;
     }
 
-    public GameObject spawnDropItem(int itemTypeId, Vec3 pos){
-        PickableItem item = new PickableItem(itemTypeId);
+    public GameObject spawnDropItem(int itemTypeId, int level, Vec3 pos){
+        PickableItem item = new PickableItem(itemTypeId, level);
         item.setPosition(pos);
         registry.add(item);
 
         return item;
     }
 
-    public void SpawnObjects(HashMap<Vec3, Integer> objects){
+    public void SpawnObjects(HashMap<Vec3, Integer> objects, int level){
         for (Vec3 pos : objects.keySet()){
-            spawnGameObject(objects.get(pos), pos);
+            spawnGameObject(objects.get(pos), level, pos);
         }
     }
 }

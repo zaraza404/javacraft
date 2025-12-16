@@ -4,8 +4,14 @@ import jogo.systems.inventoryitem.ItemType;
 import jogo.systems.inventoryitem.equipmentitem.EquipmentItem;
 
 public abstract class WeaponItem extends EquipmentItem {
+    private String modelPath;
 
-    public WeaponItem(String itemName, String texturePath, int level){
+    public WeaponItem(String itemName, String texturePath, String modelPath, int level){
         super(itemName, texturePath, ItemType.WEAPON, level);
+        this.modelPath = modelPath;
+    }
+
+    public String getModelPath() {
+        return modelPath;
     }
 }

@@ -13,7 +13,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import jogo.framework.math.Vec3;
+import jogo.gameobject.GameObjectSpawner;
 import jogo.gameobject.character.GameCharacter;
+import jogo.systems.gamesave.GameSave;
+import jogo.systems.inventoryitem.InventoryItem;
+import jogo.systems.inventoryitem.InventoryItemRegistry;
 import jogo.systems.inventoryitem.consumableitem.ConsumableItem;
 import jogo.systems.inventory.Inventory;
 import jogo.gameobject.character.Player;
@@ -46,10 +50,11 @@ public class PlayerAppState extends BaseAppState {
     private float pitch = 0f;
 
     // tuning
-    private float moveSpeed = 1.8f; // m/s
     private float sprintMultiplier = 1.7f;
     private float mouseSensitivity = 30f; // degrees per mouse analog unit
     private float eyeHeight = 0.6f;
+
+    private float savedHealth = -1.0f;
 
     private Node weaponNode;
 
@@ -67,6 +72,29 @@ public class PlayerAppState extends BaseAppState {
         world.registerPlayerAppState(this);
     }
 
+    public void loadSaveData(float playerHealth, int[][] equipmentItems, int[][] inventoryItems){
+        for (int i = 0; i < equipmentItems.length; i++){
+            int[] itemData = equipmentItems[i];
+            if (itemData[0] == -1){
+               continue;
+            }
+            InventoryItem item = InventoryItemRegistry.defaultPalette().get(itemData[0],itemData[1]);
+            inventory.addItem(item);
+            inventory.equipItem(0,i);
+        }
+
+        for (int i = 0; i < inventoryItems.length; i++){
+            int[] itemData = inventoryItems[i];
+            if (itemData[0] == -1){
+                continue;
+            }
+            InventoryItem item = InventoryItemRegistry.defaultPalette().get(itemData[0],itemData[1]);
+            inventory.addItem(item, i);
+        }
+
+        savedHealth = playerHealth;
+    }
+
     @Override
     protected void initialize(Application app) {
         // query world for recommended spawn now that it should be initialized
@@ -79,6 +107,9 @@ public class PlayerAppState extends BaseAppState {
 
         // Engine-neutral player entity (no engine visuals here)
         player = new Player();
+        if (savedHealth != -1.0){
+            player.setHealth(savedHealth);
+        }
 
         // BetterCharacterControl(radius, height, mass)
         characterControl = new BetterCharacterControl(0.4f, 0.9f, 40f);
@@ -116,15 +147,6 @@ public class PlayerAppState extends BaseAppState {
 
         applyViewToWeapon();
 
-        //TODO remove - Testing
-        inventory.addItem(new BerriesItem(1));
-        inventory.addItem(new DamageRingItem(1));
-        inventory.addItem(new SwordItem(1));
-        inventory.addItem(new GoblinEarItem(1));
-        inventory.addItem(new SwordItem(1));
-        inventory.addItem(new HammerItem(1));
-        inventory.addItem(new HeavyArmorItem(1));
-
     }
 
     @Override
@@ -136,7 +158,6 @@ public class PlayerAppState extends BaseAppState {
         // respawn on request
         if (input.consumeRespawnRequested()) {
             // refresh spawn from world in case terrain changed
-            if (world != null) spawnPosition = world.getRecommendedSpawnPosition();
             respawn();
         }
 
@@ -181,14 +202,23 @@ public class PlayerAppState extends BaseAppState {
 
         // update light to follow head
         if (playerLight != null) playerLight.setPosition(playerNode.getWorldTranslation().add(0, eyeHeight, 0));
+
+        if (player.getHealth() <= 0){
+            new GameSave().deleteSave();
+        }
     }
 
     private void respawn() {
         characterControl.setWalkDirection(Vector3f.ZERO);
         characterControl.warp(spawnPosition);
+        System.out.println(spawnPosition);
         // Reset look
         this.pitch = -0.35f;
         applyViewToCamera();
+    }
+
+    public int getFloor(){
+        return world.getDungeonFloor();
     }
 
     public void moveToSpawn() {
@@ -226,10 +256,17 @@ public class PlayerAppState extends BaseAppState {
 
     public void updateStats() {
         player.setBonusStats(inventory.getStats());
+        player.setWeaponModel(inventory.getWeaponModel());
     }
 
     public void useItem(ConsumableItem item, GameCharacter target){
         inventory.useItem(item, target);
+    }
+    public void dropItem(InventoryItem item){
+        if (item == null){
+            return;
+        }
+        GameObjectSpawner.getInstance().spawnDropItem(InventoryItemRegistry.defaultPalette().getItemId(item), item.getLevel(), player.getPosition());
     }
 
     @Override

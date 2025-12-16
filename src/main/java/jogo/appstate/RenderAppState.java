@@ -4,6 +4,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
+import com.jme3.light.Light;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -20,10 +21,7 @@ import jogo.gameobject.object.LightSource;
 import jogo.gameobject.object.PickableItem;
 import jogo.util.WeaponModel;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RenderAppState extends BaseAppState {
 
@@ -35,6 +33,7 @@ public class RenderAppState extends BaseAppState {
 
     private Node gameNode;
     private final Map<GameObject, Spatial> instances = new HashMap<>();
+    private final Map<GameObject, Light[]> lights = new HashMap<>();
 
     public RenderAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, RenderIndex renderIndex, WorldAppState world) {
         this.rootNode = rootNode;
@@ -70,9 +69,13 @@ public class RenderAppState extends BaseAppState {
                         world.addNonPlayableCharacterControl((NonPlayebleGameCharacter) obj, s);
                     }
                     if (obj instanceof LightSource lightSource){
-                        for (PointLight light : lightSource.getLight()){
+                        Light[] objLights = new Light[lightSource.getLight().length];
+                        for (int i = 0; i < objLights.length; i++){
+                            Light light = lightSource.getLight()[i];
                             rootNode.addLight(light);
+                            objLights[i] = light;
                         }
+                        lights.put(obj, objLights);
                     }
                 }
             }
@@ -99,6 +102,13 @@ public class RenderAppState extends BaseAppState {
                 }
                 s.removeFromParent();
             }
+            if (obj instanceof LightSource){
+                for (Light l : this.lights.get(obj)){
+                    rootNode.removeLight(l);
+                }
+                lights.remove(obj);
+            }
+
             registry.completeRemove(obj);
         }
         //TODO delete code if turns out it is useless

@@ -1,8 +1,5 @@
 package jogo.gameobject;
 
-import jogo.systems.inventoryitem.InventoryItem;
-import jogo.systems.inventoryitem.InventoryItemRegistry;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -20,21 +17,26 @@ public class GameObjectRegistry {
         return id;
     }
 
-    public GameObject get(int id)  {
+    public GameObject get(int id, int level)  {
         Class<?> itemClass = objTypes.get(id);
         if (itemClass == null){
             throw new IllegalArgumentException("No GameObjectWithId " + id);
         }
-        Constructor<?> constructor = null;
-        try {
-            constructor = itemClass.getDeclaredConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Object doesnt have a consructor");
-        }
 
         GameObject obj = null;
+
         try {
-            obj = (GameObject) constructor.newInstance();
+            Constructor<?> constructor = itemClass.getDeclaredConstructor(int.class);
+            obj = (GameObject) constructor.newInstance(level);
+        } catch (NoSuchMethodException e) {
+            // If no int constructor, try no-arg constructor
+            try {
+                Constructor<?> constructor = itemClass.getDeclaredConstructor();
+                obj = (GameObject) constructor.newInstance();
+            } catch (NoSuchMethodException | InstantiationException |
+                     IllegalAccessException | InvocationTargetException ex) {
+                throw new RuntimeException("Object must have either a no-arg constructor or a constructor with int parameter", ex);
+            }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
@@ -51,7 +53,10 @@ public class GameObjectRegistry {
             r.register(0, Class.forName("jogo.gameobject.character.Player"));
             r.register(1, Class.forName("jogo.gameobject.object.Torch"));
             r.register(2, Class.forName("jogo.gameobject.object.Spikes"));
-            r.register(3, Class.forName("jogo.gameobject.character.LeatherGoblin"));
+            r.register(3, Class.forName("jogo.gameobject.character.enemygamecharacter.GoblinBatrak"));
+            r.register(4, Class.forName("jogo.gameobject.character.enemygamecharacter.GoblinRogue"));
+            r.register(5, Class.forName("jogo.gameobject.character.enemygamecharacter.GoblinBrute"));
+            r.register(6, Class.forName("jogo.gameobject.character.enemygamecharacter.GoblinCursed"));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
