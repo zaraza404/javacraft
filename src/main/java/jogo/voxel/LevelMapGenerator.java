@@ -29,7 +29,7 @@ public class LevelMapGenerator {
         random = new Random(seed);
 
         //Generate Rooms
-        generateRooms(8);
+        generateRooms(5);
 
 
 
@@ -295,7 +295,7 @@ public class LevelMapGenerator {
     public void placeEnemies(int pSpawnZ, int pSpawnX){
 
         int spawnProtectionDistance = 3;
-
+        //TODO Make enemies spawn more predictable
         for (int z = 0; z < mapLayout.length; z++) {
             for (int x = 0; x < mapLayout[z].length; x++) {
                 if (mapLayout[z][x] == 'E'){
@@ -303,7 +303,7 @@ public class LevelMapGenerator {
                         mapLayout[z][x] = '.';
                     } else {
                         char[] enemyTypes = new char[]{'B', 'R', 'H', 'C'};
-                        int enemyType = random.nextInt(Math.min(enemyTypes.length, floor));
+                        int enemyType = random.nextInt(Math.min(enemyTypes.length, Math.max(floor, 1)));
 
                         mapLayout[z][x] = enemyTypes[enemyType];
                     }
