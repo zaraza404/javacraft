@@ -15,6 +15,10 @@ public class LevelMapGenerator {
 
     private int floor;
 
+    private int emptySpacesAmount = 0;
+    private int currentSpaceNum = 0;
+    private int enemies_spawn_rate = 5; //every n spaces spawn enemy
+
     public char[][] generateMap(int seed, int floor){
         mapLayout = new char[mapSize][mapSize];
         for (int z = 0; z <  mapLayout.length; z ++){
@@ -96,10 +100,8 @@ public class LevelMapGenerator {
 
                     int tileTypeDecider = random.nextInt();
 
-                    if (tileTypeDecider % 10 == 0){
+                    if (tileTypeDecider % 10 == 0) {
                         mapLayout[z][x] = 'T';
-                    } else if (tileTypeDecider % 7 == 0) {
-                        mapLayout[z][x] = 'E';
                     } else {
                         mapLayout[z][x] = '.';
                     }
@@ -298,16 +300,17 @@ public class LevelMapGenerator {
         //TODO Make enemies spawn more predictable
         for (int z = 0; z < mapLayout.length; z++) {
             for (int x = 0; x < mapLayout[z].length; x++) {
-                if (mapLayout[z][x] == 'E'){
-                    if (z < (pSpawnZ - spawnProtectionDistance) || z > (pSpawnZ + spawnProtectionDistance) || x < (pSpawnX - spawnProtectionDistance) || x < (pSpawnX + spawnProtectionDistance)){
-                        mapLayout[z][x] = '.';
-                    } else {
+                if (mapLayout[z][x] == '.')
+                    if (z < (pSpawnZ - spawnProtectionDistance) || z > (pSpawnZ + spawnProtectionDistance) || x < (pSpawnX - spawnProtectionDistance) || x > (pSpawnX + spawnProtectionDistance)) {
+                        currentSpaceNum += 1;
+                        if(currentSpaceNum > enemies_spawn_rate) {
+                        currentSpaceNum -= enemies_spawn_rate;
                         char[] enemyTypes = new char[]{'B', 'R', 'H', 'C'};
                         int enemyType = random.nextInt(Math.min(enemyTypes.length, Math.max(floor, 1)));
 
-                        mapLayout[z][x] = enemyTypes[enemyType];
+                        mapLayout[z][x] = enemyTypes[enemyType];}
+
                     }
-                }
             }
         }
 
