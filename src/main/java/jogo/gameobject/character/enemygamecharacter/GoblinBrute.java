@@ -14,8 +14,8 @@ public class GoblinBrute extends EnemyGameCharacter{
     public GoblinBrute(int level){
         super("Brute", level);
         setDropItemsTable(new int[]{1,7,11,13,17});
-        setBaseStat(StatType.DAMAGE, 2f + (this.level * 1f));
-        setBaseStat(StatType.HEALTH, 8f + (this.level * 6f));
+        setBaseStat(StatType.DAMAGE, 2f + (this.level * 2f));
+        setBaseStat(StatType.HEALTH, 8f + (this.level * 12f));
         setBaseStat(StatType.DEFENCE, 1f + (this.level * 0.5f));
         setBaseStat(StatType.ATTACKSPEED, 0.8f + (this.level * 0.1f));
         setBaseStat(StatType.MOVEMENTSPEED, 0.8f);

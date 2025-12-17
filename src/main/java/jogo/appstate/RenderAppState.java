@@ -85,7 +85,7 @@ public class RenderAppState extends BaseAppState {
             }
             if (obj instanceof PickableItem){
                 if (((PickableItem) obj).isPickedUp()){
-                    registry.startRemove(obj);
+                    world.startDeletion(obj);
                 }
                 Vector3f cameraPos = getApplication().getCamera().getLocation();
                 s.lookAt(new Vector3f(cameraPos.x, s.getWorldTranslation().y, cameraPos.z), Vector3f.UNIT_Y);

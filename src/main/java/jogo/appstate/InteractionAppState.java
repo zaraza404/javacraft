@@ -12,6 +12,7 @@ import jogo.engine.RenderIndex;
 import jogo.gameobject.GameObject;
 import jogo.gameobject.character.enemygamecharacter.EnemyGameCharacter;
 import jogo.gameobject.character.GameCharacter;
+import jogo.gameobject.object.InteractableObject;
 import jogo.gameobject.object.PickableItem;
 import jogo.voxel.VoxelWorld;
 
@@ -54,10 +55,17 @@ public class InteractionAppState extends BaseAppState {
                 GameObject obj = findRegistered(hit);
                 if (obj instanceof PickableItem pickableItem) {
                     if (player.getInventory().addItem(pickableItem.pickUp())){
-                        System.out.println("Interacted with item: " + obj.getName());
+                        System.out.println("Picked up an Item: " + obj.getName());
                         ((PickableItem) obj).setPickedUp();
                     }
                     return;
+                } else if ((obj instanceof InteractableObject interactable)){
+                    if (interactable.interact()){
+                        System.out.println("Interacted with GameObject " + obj.getName());
+                        if (interactable.isDeletedOnInteract()){
+                            world.startDeletion(obj);
+                        }
+                    }
                 }
             }
 

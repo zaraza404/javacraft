@@ -57,6 +57,7 @@ public class GameObjectRegistry {
             r.register(4, Class.forName("jogo.gameobject.character.enemygamecharacter.GoblinRogue"));
             r.register(5, Class.forName("jogo.gameobject.character.enemygamecharacter.GoblinBrute"));
             r.register(6, Class.forName("jogo.gameobject.character.enemygamecharacter.GoblinCursed"));
+            r.register(7, Class.forName("jogo.gameobject.object.LootPot"));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

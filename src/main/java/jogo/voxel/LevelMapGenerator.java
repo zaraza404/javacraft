@@ -15,9 +15,8 @@ public class LevelMapGenerator {
 
     private int floor;
 
-    private int emptySpacesAmount = 0;
     private int currentSpaceNum = 0;
-    private int enemies_spawn_rate = 5; //every n spaces spawn enemy
+    private int enemies_spawn_rate = 16; //every n spaces spawn enemy
 
     public char[][] generateMap(int seed, int floor){
         mapLayout = new char[mapSize][mapSize];
@@ -33,7 +32,7 @@ public class LevelMapGenerator {
         random = new Random(seed);
 
         //Generate Rooms
-        generateRooms(5);
+        generateRooms(4);
 
 
 
@@ -52,24 +51,7 @@ public class LevelMapGenerator {
             roomCenters[i][0] = random.nextInt(roomPos[0]+2,roomPos[0]+roomSize[0]-2);
             roomCenters[i][1] = random.nextInt(roomPos[1]+2,roomPos[1]+roomSize[1]-2);
         }
-        /*for (int[] roomCenter : roomCenters){
-            Direction dir;
-            if (roomCenter[0] < roomCenter[1]){
-                if (roomCenter[0] < (mapSize/2 - roomCenter[1])){
-                    dir = Direction.E;
-                } else {
-                    dir = Direction.N;
-                }
-            } else {
-                if (roomCenter[0] < (mapSize/2 - roomCenter[1])){
-                    dir = Direction.S;
-                } else {
-                    dir = Direction.W;
-                }
-            }
 
-            generateCorridor(roomCenter[0], roomCenter[1], dir);
-        }*/
 
         for (int i = 0; i < roomCenters.length-1; i++){
             connectTwoRooms(roomCenters[i][0],roomCenters[i][1],roomCenters[i+1][0],roomCenters[i+1][1]);
@@ -100,9 +82,12 @@ public class LevelMapGenerator {
 
                     int tileTypeDecider = random.nextInt();
 
-                    if (tileTypeDecider % 10 == 0) {
+                    if (tileTypeDecider % 20 == 0) {
                         mapLayout[z][x] = 'T';
-                    } else {
+
+                    }else if (tileTypeDecider % 20 == 1) {
+                        mapLayout[z][x] = '$';
+                    }else {
                         mapLayout[z][x] = '.';
                     }
                 }
@@ -117,51 +102,6 @@ public class LevelMapGenerator {
             }
         }
     }
-
-    /*public void generateCorridor(int startX, int startZ, Direction dir){
-        boolean exitedRoom = false;
-        boolean PathEnded = false;
-        int currX = startX;
-        int currZ = startZ;
-
-        int dirX = 0;
-        int dirZ = 0;
-        switch (dir){
-            case W -> {
-                dirX = -1;
-            }
-            case E -> {
-                dirX = 1;
-            }
-            case N -> {
-                dirZ = -1;
-            }
-            case S -> {
-                dirZ = 1;
-            }
-
-        }
-
-        while (!PathEnded){
-            currX += dirX;
-            currZ += dirZ;
-            if (currX >= mapLayout[0].length || currZ >= mapLayout.length || currX < 0 || currZ < 0){
-                break;
-            }
-            if (!exitedRoom){
-                if (mapLayout[currZ][currX] == '#'){
-                    mapLayout[currZ][currX] = '=';
-                    exitedRoom = true;
-                }
-            } else {
-                if (mapLayout[currZ][currX] == '#' ){
-                    mapLayout[currZ][currX] = '=';
-                } else {
-                    PathEnded = true;
-                }
-            }
-        }
-    }*/
 
     private void connectTwoRooms(int x1, int z1, int x2, int z2){
 
@@ -285,6 +225,9 @@ public class LevelMapGenerator {
             case 'T' -> {
                 return '.';
             }
+            case '$' -> {
+                return '$';
+            }
             case '=' -> {
                 return '=';
             }
@@ -297,10 +240,10 @@ public class LevelMapGenerator {
     public void placeEnemies(int pSpawnZ, int pSpawnX){
 
         int spawnProtectionDistance = 3;
-        //TODO Make enemies spawn more predictable
+
         for (int z = 0; z < mapLayout.length; z++) {
             for (int x = 0; x < mapLayout[z].length; x++) {
-                if (mapLayout[z][x] == '.')
+                if (mapLayout[z][x] == '.') {
                     if (z < (pSpawnZ - spawnProtectionDistance) || z > (pSpawnZ + spawnProtectionDistance) || x < (pSpawnX - spawnProtectionDistance) || x > (pSpawnX + spawnProtectionDistance)) {
                         currentSpaceNum += 1;
                         if(currentSpaceNum > enemies_spawn_rate) {
@@ -308,9 +251,10 @@ public class LevelMapGenerator {
                         char[] enemyTypes = new char[]{'B', 'R', 'H', 'C'};
                         int enemyType = random.nextInt(Math.min(enemyTypes.length, Math.max(floor, 1)));
 
-                        mapLayout[z][x] = enemyTypes[enemyType];}
-
+                        mapLayout[z][x] = enemyTypes[enemyType];
+                        }
                     }
+                }
             }
         }
 

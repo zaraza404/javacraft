@@ -14,8 +14,8 @@ public class GoblinBatrak extends EnemyGameCharacter{
     public GoblinBatrak(int level){
         super("Batrak", level);
         setDropItemsTable(new int[]{0,4,8,16});
-        setBaseStat(StatType.DAMAGE, 1f + (this.level * 0.5f));
-        setBaseStat(StatType.HEALTH, 4f + (this.level * 2f));
+        setBaseStat(StatType.DAMAGE, 1f + (this.level * 1f));
+        setBaseStat(StatType.HEALTH, 4f + (this.level * 4f));
         setBaseStat(StatType.DEFENCE, 0f + (this.level * 0f));
         setBaseStat(StatType.ATTACKSPEED, 1f + (this.level * 0.1f));
         setBaseStat(StatType.MOVEMENTSPEED, 1f);

@@ -14,8 +14,8 @@ public class GoblinRogue extends EnemyGameCharacter{
     public GoblinRogue(int level){
         super("Rogue", level);
         setDropItemsTable(new int[]{0,1,5,12,16});
-        setBaseStat(StatType.DAMAGE, 2f + (this.level * 0.7f));
-        setBaseStat(StatType.HEALTH, 5f + (this.level * 3f));
+        setBaseStat(StatType.DAMAGE, 2f + (this.level * 1.4f));
+        setBaseStat(StatType.HEALTH, 5f + (this.level * 6f));
         setBaseStat(StatType.DEFENCE, 0.5f + (this.level * 0.2f));
         setBaseStat(StatType.ATTACKSPEED, 1.4f + (this.level * 0.2f));
         setBaseStat(StatType.MOVEMENTSPEED, 1.3f + (this.level * 0.05f));

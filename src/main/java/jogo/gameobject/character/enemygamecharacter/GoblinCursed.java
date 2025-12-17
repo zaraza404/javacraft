@@ -14,8 +14,8 @@ public class GoblinCursed extends EnemyGameCharacter{
     public GoblinCursed(int level){
         super("Cursed", level);
         setDropItemsTable(new int[]{1,6,10,15,19});
-        setBaseStat(StatType.DAMAGE, 3f + (this.level * 1.3f));
-        setBaseStat(StatType.HEALTH, 6f + (this.level * 4f));
+        setBaseStat(StatType.DAMAGE, 3f + (this.level * 2.6f));
+        setBaseStat(StatType.HEALTH, 6f + (this.level * 8f));
         setBaseStat(StatType.DEFENCE, 0f + (this.level * 0.1f));
         setBaseStat(StatType.ATTACKSPEED, 1.1f + (this.level * 0.1f));
         setBaseStat(StatType.MOVEMENTSPEED, 1.9f + (this.level * 0.1f));

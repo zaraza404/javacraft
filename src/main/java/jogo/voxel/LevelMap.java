@@ -70,7 +70,7 @@ public class LevelMap {
         layout_dictionary.put('m', new byte[][]{{3, 0, 0, 0, 0, 0, 2, 2},{0,2,0,0,0,0,0,0}});
         layout_dictionary.put('M', new byte[][]{{3, 0, 0, 6, 0, 0, 2, 2},{0,2,0,0,0,0,0,0}});
         layout_dictionary.put('T', new byte[][]{{3, 3, 3, 3, 2, 2, 2, 2},{0,0,0,0,1,0,0,0}});
-
+        layout_dictionary.put('$', new byte[][]{{3, 3, 3, 3, 0, 0, 2, 2},{0,0,0,0,7,0,0,0}});
 
         layout_dictionary.put('_', new byte[][]{{3, 3, 3, 0, 0, 0, 2, 2},{}});
 

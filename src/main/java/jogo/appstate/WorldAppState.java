@@ -207,7 +207,7 @@ public class WorldAppState extends BaseAppState {
 
     public void loadLevel(int levelDifficulty, int levelSeed){
         for (GameObject obj : registry.getAll()){
-            registry.startRemove(obj);
+            startDeletion(obj);
         }
         LevelMap level = new LevelMap("Floor " + dungeonFloor, levelSeed, dungeonFloor);
         byte[][][] level_block_layout= level.getMapBlockLayout();
@@ -253,6 +253,10 @@ public class WorldAppState extends BaseAppState {
             worldNode.removeFromParent();
             worldNode = null;
         }
+    }
+
+    public void startDeletion(GameObject obj){
+        registry.startRemove(obj);
     }
 
     @Override
