@@ -85,7 +85,7 @@ public class LevelMapGenerator {
                         mapLayout[z][x] = '$';
                     } else if (tileTypeDecider % 20 == 2) {
                         mapLayout[z][x] = 'c';
-                    } else if (tileTypeDecider % 7 == 1) {
+                    } else if (tileTypeDecider % 40 == 3) {
                         mapLayout[z][x] = 'i';
                     } else {
                         mapLayout[z][x] = '.';
