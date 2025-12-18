@@ -17,9 +17,10 @@ public class Inventory {
 
 
     public Inventory(int size){
-        equipmentItems = new InventoryItem[ItemType.values().length - 1];
-        inventoryItems = new InventoryItem[size];
         this.size = size;
+        equipmentItems = new InventoryItem[ItemType.values().length - 1];
+        inventoryItems = new InventoryItem[this.size];
+
     }
 
     public void useItem(ConsumableItem item, GameCharacter target){

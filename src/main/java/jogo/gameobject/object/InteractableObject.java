@@ -1,12 +1,11 @@
 package jogo.gameobject.object;
 
+import jogo.appstate.WorldAppState;
+
 public interface InteractableObject {
 
     
     
-    public boolean interact();
+    public boolean interact(WorldAppState world);
 
-    public default boolean isDeletedOnInteract(){
-        return false;
-    };
 }

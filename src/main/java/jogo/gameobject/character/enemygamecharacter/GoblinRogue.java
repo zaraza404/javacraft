@@ -14,8 +14,8 @@ public class GoblinRogue extends EnemyGameCharacter{
     public GoblinRogue(int level){
         super("Rogue", level);
         setDropItemsTable(new int[]{0,1,5,12,16});
-        setBaseStat(StatType.DAMAGE, 2f + (this.level * 1.4f));
-        setBaseStat(StatType.HEALTH, 5f + (this.level * 6f));
+        setBaseStat(StatType.DAMAGE, 2f + (this.level * 0.35f));
+        setBaseStat(StatType.HEALTH, 5f + (this.level * 1.5f));
         setBaseStat(StatType.DEFENCE, 0.5f + (this.level * 0.2f));
         setBaseStat(StatType.ATTACKSPEED, 1.4f + (this.level * 0.2f));
         setBaseStat(StatType.MOVEMENTSPEED, 1.3f + (this.level * 0.05f));
@@ -24,11 +24,6 @@ public class GoblinRogue extends EnemyGameCharacter{
     }
 
 
-
-    @Override
-    public void decision(WorldAppState world) {
-        this.setPath(world.getPathFromTo(position,world.getPlayerPosition()));
-    }
     @Override
     public Spatial getSpatial(AssetManager assetManager){
 

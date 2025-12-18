@@ -5,9 +5,7 @@ import com.jme3.scene.Spatial;
 import jogo.gameobject.GameObject;
 import jogo.systems.inventoryitem.InventoryItem;
 import jogo.systems.inventoryitem.InventoryItemRegistry;
-import jogo.util.ItemBillboard;
-
-import java.lang.reflect.InvocationTargetException;
+import jogo.util.Billboard;
 
 public class PickableItem extends GameObject {
     double posOffcet = 0;
@@ -38,7 +36,7 @@ public class PickableItem extends GameObject {
 
     @Override
     public Spatial getSpatial(AssetManager assetManager){
-        return (new ItemBillboard(name, 0.5f, item.getTexturePath(), assetManager));
+        return (new Billboard(name, 0.5f, item.getTexturePath(), assetManager));
     }
 
 }

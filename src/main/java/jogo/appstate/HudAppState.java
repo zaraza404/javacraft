@@ -11,8 +11,8 @@ public class HudAppState extends BaseAppState {
 
     public final Node guiNode;
     private final AssetManager assetManager;
-    private PlayerAppState player;
-    private InputAppState input;
+    private final PlayerAppState player;
+    private final InputAppState input;
 
     private UserInterface currentUI;
 

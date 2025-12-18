@@ -6,11 +6,10 @@ import java.util.Random;
 
 public class LevelMapGenerator {
 
-
     private char[][] mapLayout;
     private Random random;
 
-    private int mapSize = 48;
+    private int mapSize = 36;
     private int maxRoomSize = 10;
 
     private int floor;
@@ -31,10 +30,8 @@ public class LevelMapGenerator {
 
         random = new Random(seed);
 
-        //Generate Rooms
+
         generateRooms(4);
-
-
 
         printMap();
         return mapLayout;
@@ -58,10 +55,10 @@ public class LevelMapGenerator {
         }
 
         mapLayout[roomCenters[0][1]][roomCenters[0][0]] = '@';
-        placeEnemies(roomCenters[0][1],roomCenters[0][0]);
-        generateDoor(roomCenters[roomCenters.length-1]);
-        //mapLayout[roomCenters[roomCenters.length-1][1]][roomCenters[roomCenters.length-1][0]] = 'D';
 
+        placeCharacters(roomCenters[0][1],roomCenters[0][0]);
+
+        generateDoor(roomCenters[roomCenters.length-1]);
 
         cleanWalls();
 
@@ -70,6 +67,7 @@ public class LevelMapGenerator {
     private void generateRoom(int pos_x, int pos_z, int size_x, int size_z){  // size_x and size_z have to be at least 5
 
         for (int x = pos_x; x < pos_x + size_x; x++){
+
             for (int z = pos_z; z < pos_z + size_z; z++){
                 if (x == pos_x || x == size_x-1 || z == pos_z || z == size_z-1){
                     if (random.nextFloat() < 0.05f){
@@ -79,15 +77,17 @@ public class LevelMapGenerator {
                     }
 
                 } else {
-
                     int tileTypeDecider = random.nextInt();
 
                     if (tileTypeDecider % 20 == 0) {
                         mapLayout[z][x] = 'T';
-
-                    }else if (tileTypeDecider % 20 == 1) {
+                    } else if (tileTypeDecider % 20 == 1) {
                         mapLayout[z][x] = '$';
-                    }else {
+                    } else if (tileTypeDecider % 20 == 2) {
+                        mapLayout[z][x] = 'c';
+                    } else if (tileTypeDecider % 7 == 1) {
+                        mapLayout[z][x] = 'i';
+                    } else {
                         mapLayout[z][x] = '.';
                     }
                 }
@@ -114,7 +114,7 @@ public class LevelMapGenerator {
             makeWalkable(z1,x);
             if (secretPassage){
                 if (mapLayout[z1][x] == '='){
-                    mapLayout[z1][x] = '~';
+                    mapLayout[z1][x] = '≠';
                 }
             }
 
@@ -126,7 +126,7 @@ public class LevelMapGenerator {
             makeWalkable(z,x2);
             if (secretPassage){
                 if (mapLayout[z][x2] == '='){
-                    mapLayout[z][x2] = '~';
+                    mapLayout[z][x2] = '≠';
                 }
             }
         }
@@ -138,7 +138,7 @@ public class LevelMapGenerator {
             for (int z = posZ-1; z <= posZ+1; z++){
                 for (int x = posX-1; x <= posX+1; x++){
                     if (mapLayout[z][x] != '#') {
-                        mapLayout[z][x] = 'm';
+                        mapLayout[z][x] = '^';
                     }
 
                 }
@@ -213,11 +213,11 @@ public class LevelMapGenerator {
             case '#' -> {
                 return '=';
             }
-            case 'm' -> {
-                return 'M';
+            case '^' -> {
+                return '~';
             }
-            case 'M' -> {
-                return 'M';
+            case '~' -> {
+                return '~';
             }
             case 'E' -> {
                 return 'E';
@@ -237,7 +237,7 @@ public class LevelMapGenerator {
         }
     }
 
-    public void placeEnemies(int pSpawnZ, int pSpawnX){
+    public void placeCharacters(int pSpawnZ, int pSpawnX){
 
         int spawnProtectionDistance = 3;
 
@@ -262,10 +262,11 @@ public class LevelMapGenerator {
 
     public void printMap() {
         for (int z = 0; z < mapLayout.length; z++) {
+            String line = "";
             for (int x = 0; x < mapLayout[z].length; x++) {
-                System.out.print(mapLayout[z][x] + " ");
+                line += (mapLayout[z][x] + " ");
             }
-            System.out.println();
+            System.out.println(line);
         }
     }
 

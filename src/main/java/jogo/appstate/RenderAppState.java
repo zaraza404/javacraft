@@ -55,7 +55,6 @@ public class RenderAppState extends BaseAppState {
         var toRemove = registry.getAllToRemove();
 
         var current = registry.getAll();
-        Set<GameObject> alive = new HashSet<>(current);
 
         for (GameObject obj : current) {
             Spatial s = instances.get(obj);
@@ -110,19 +109,6 @@ public class RenderAppState extends BaseAppState {
             }
 
             registry.completeRemove(obj);
-        }
-        //TODO delete code if turns out it is useless
-
-        // Cleanup: remove spatials for objects no longer in registry
-        var it = instances.entrySet().iterator();
-        while (it.hasNext()) {
-            var e = it.next();
-            if (!alive.contains(e.getKey())) {
-                Spatial s = e.getValue();
-                renderIndex.unregister(s);
-                if (s.getParent() != null) s.removeFromParent();
-                it.remove();
-            }
         }
     }
 

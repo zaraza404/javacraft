@@ -5,6 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import jogo.appstate.WorldAppState;
 import jogo.gameobject.GameObject;
 import jogo.gameobject.GameObjectSpawner;
 
@@ -22,16 +23,12 @@ public class LootPot extends GameObject implements InteractableObject{
     }
 
     @Override
-    public boolean interact() {
+    public boolean interact(WorldAppState world) {
+        world.startDeletion(this);
         if (new Random().nextInt()%2 == 0){
             GameObjectSpawner.getInstance().spawnDropItem(new Random().nextInt(20), level, getPosition());
         }
 
-        return true;
-    }
-
-    @Override
-    public boolean isDeletedOnInteract(){
         return true;
     }
 

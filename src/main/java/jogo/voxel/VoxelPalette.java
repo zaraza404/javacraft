@@ -37,5 +37,4 @@ public class VoxelPalette {
 
     public static final byte AIR_ID = 0;
     public static final byte STONE_ID = 1;
-    public static final byte STONE_WALL_ID = 1;
 }

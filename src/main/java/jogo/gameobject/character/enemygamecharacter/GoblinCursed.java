@@ -13,9 +13,9 @@ public class GoblinCursed extends EnemyGameCharacter{
 
     public GoblinCursed(int level){
         super("Cursed", level);
-        setDropItemsTable(new int[]{1,6,10,15,19});
-        setBaseStat(StatType.DAMAGE, 3f + (this.level * 2.6f));
-        setBaseStat(StatType.HEALTH, 6f + (this.level * 8f));
+        setDropItemsTable(new int[]{1,6,15,19});
+        setBaseStat(StatType.DAMAGE, 3f + (this.level * 0.75f));
+        setBaseStat(StatType.HEALTH, 6f + (this.level * 2f));
         setBaseStat(StatType.DEFENCE, 0f + (this.level * 0.1f));
         setBaseStat(StatType.ATTACKSPEED, 1.1f + (this.level * 0.1f));
         setBaseStat(StatType.MOVEMENTSPEED, 1.9f + (this.level * 0.1f));
@@ -25,10 +25,6 @@ public class GoblinCursed extends EnemyGameCharacter{
 
 
 
-    @Override
-    public void decision(WorldAppState world) {
-        this.setPath(world.getPathFromTo(position,world.getPlayerPosition()));
-    }
     @Override
     public Spatial getSpatial(AssetManager assetManager){
 

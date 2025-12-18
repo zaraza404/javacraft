@@ -158,7 +158,7 @@ public class PlayerAppState extends BaseAppState {
         // respawn on request
         if (input.consumeRespawnRequested()) {
             // refresh spawn from world in case terrain changed
-            respawn();
+            //respawn();
         }
 
         // pause controls if mouse not captured

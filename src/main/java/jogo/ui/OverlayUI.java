@@ -51,7 +51,7 @@ public class OverlayUI extends UserInterface{
     @Override
     public void update(float tpf) {
         super.update(tpf);
-        healthBarFill.setWidth(healthBarDim.x * player.getPlayer().getHealthPercentage());
+        healthBarFill.setWidth(Math.min(healthBarDim.x * player.getPlayer().getHealthPercentage(), healthBarDim.x));
     }
 
 }

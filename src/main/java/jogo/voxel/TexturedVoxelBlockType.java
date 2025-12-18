@@ -19,10 +19,6 @@ public abstract class TexturedVoxelBlockType extends VoxelBlockType{
         Texture t = assetManager.loadTexture(texturePath);
         t.setMagFilter(Texture.MagFilter.Nearest);
         m.setTexture("DiffuseMap", t);
-        m.setBoolean("UseMaterialColors", true);
-        m.setColor("Diffuse", ColorRGBA.White);
-        m.setColor("Specular", ColorRGBA.White.mult(0.02f)); // reduced specular
-        m.setFloat("Shininess", 32f); // tighter, less intense highlight
 
         return m;
     }

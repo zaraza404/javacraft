@@ -10,6 +10,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.collision.CollisionResults;
 import jogo.engine.RenderIndex;
 import jogo.gameobject.GameObject;
+import jogo.gameobject.character.NonPlayebleGameCharacter;
 import jogo.gameobject.character.enemygamecharacter.EnemyGameCharacter;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.object.InteractableObject;
@@ -60,11 +61,8 @@ public class InteractionAppState extends BaseAppState {
                     }
                     return;
                 } else if ((obj instanceof InteractableObject interactable)){
-                    if (interactable.interact()){
+                    if (interactable.interact(world)){
                         System.out.println("Interacted with GameObject " + obj.getName());
-                        if (interactable.isDeletedOnInteract()){
-                            world.startDeletion(obj);
-                        }
                     }
                 }
             }
@@ -89,9 +87,9 @@ public class InteractionAppState extends BaseAppState {
             if (results.size() > 0) {
                 Spatial hit = results.getClosestCollision().getGeometry();
                 GameObject obj = findRegistered(hit);
-                if (obj instanceof EnemyGameCharacter character) {
-                    System.out.println("Attacked EnemyCharacter: " + obj.getName());
-                    player.getPlayer().attack((GameCharacter) obj);
+                if (obj instanceof NonPlayebleGameCharacter character) {
+                    System.out.println("Attacked EnemyCharacter: " + character.getName());
+                    player.getPlayer().attack(character);
                     return;
                 }
             }

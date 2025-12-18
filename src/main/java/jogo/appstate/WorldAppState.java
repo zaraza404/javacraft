@@ -18,6 +18,7 @@ import jogo.gameobject.GameObject;
 import jogo.gameobject.GameObjectSpawner;
 import jogo.gameobject.character.GameCharacter;
 import jogo.gameobject.character.NonPlayebleGameCharacter;
+import jogo.gameobject.character.enemygamecharacter.EnemyGameCharacter;
 import jogo.gameobject.object.AffectObject;
 import jogo.systems.gamesave.GameSave;
 import jogo.util.pathfinding.Pathfinding;
@@ -49,7 +50,7 @@ public class WorldAppState extends BaseAppState {
     private Pathfinding pathfinding;
 
     private int dungeonFloor = 0;
-    private int dungeonSeed = new Random().nextInt();
+    private int dungeonSeed = 2010;
 
     public WorldAppState(Node rootNode, AssetManager assetManager, GameRegistry registry, PhysicsSpace physicsSpace, Camera cam, InputAppState input) {
         this.rootNode = rootNode;
@@ -75,20 +76,14 @@ public class WorldAppState extends BaseAppState {
         worldNode = new Node("World");
         rootNode.attachChild(worldNode);
 
-        // Lighting
-        AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White);
-        ambient.setEnabled(true);// slightly increased ambient
-        //rootNode.addLight(ambient);
+
 
         // Voxel world 16x16x16 (reduced size for simplicity)
         voxelWorld = new VoxelWorld(assetManager, 320, 32, 320);
         worldNode.attachChild(voxelWorld.getNode());
 
 
-        loadLevel(dungeonFloor,dungeonSeed + dungeonFloor);
-
-
+        loadLevel(dungeonSeed + dungeonFloor);
 
 
         // compute recommended spawn
@@ -100,7 +95,7 @@ public class WorldAppState extends BaseAppState {
     }
 
     public void addNonPlayableCharacterControl(NonPlayebleGameCharacter npc, Spatial spatial){
-        BetterCharacterControl npcControl =  new BetterCharacterControl(0.35f, 0.9f, 80f);
+        BetterCharacterControl npcControl =  new BetterCharacterControl(0.2f, 0.9f, 80f);
         npcControl.setJumpForce(new Vector3f(0,5f,0));
         npcControl.setGravity(new Vector3f(0, -24f, 0));
         npcControl.setJumpForce(new Vector3f(0, 400f, 0));
@@ -161,11 +156,12 @@ public class WorldAppState extends BaseAppState {
                     }
 
                     npc.setPosition(new Vec3(control.getSpatial().getWorldTranslation()));
-
-                    if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 1f){
-                        npc.attack(playerAppState.getPlayer());
+                    if (npc instanceof EnemyGameCharacter) {
+                        if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 1f) {
+                            npc.attack(playerAppState.getPlayer());
+                        }
                     }
-                    else if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 8f){
+                    if (npc.getPosition().getXZDistanceTo(getPlayerPosition()) < 8f){
 
                         if (npc.getPosition().getXZDistanceTo(npc.getTargetPosition()) < 0.5f) {
                             npc.decision(this);
@@ -177,15 +173,18 @@ public class WorldAppState extends BaseAppState {
                             control.setWalkDirection(npc.getMovementVec3(tpf).toVector3f());
                             control.setViewDirection(npc.getMovementVec3(tpf).toVector3f());
                         }
+                    } else {
+                        control.setViewDirection(npc.getPosition().addVec3(playerAppState.getPlayer().getPosition().scaleBy(-1)).toVector3f());
                     }
+
+
+
                 }
             } else if (obj instanceof AffectObject affObj) {
                 if (affObj.isInAffectRadius(getPlayerPosition())){
                     affObj.affect(playerAppState.getPlayer(), tpf);
                 }
             }
-        }
-        for (NonPlayebleGameCharacter npc : npcControls.keySet() ){
         }
     }
 
@@ -200,12 +199,12 @@ public class WorldAppState extends BaseAppState {
         VoxelBlockType block = voxelWorld.getPalette().get(voxelWorld.getBlock(cell.x, cell.y, cell.z));
         if (block instanceof DoorBlockType){
             dungeonFloor += 1;
-            loadLevel(dungeonFloor, dungeonSeed + dungeonFloor);
+            loadLevel(dungeonSeed + dungeonFloor);
         }
         return block.interact();
     }
 
-    public void loadLevel(int levelDifficulty, int levelSeed){
+    public void loadLevel(int levelSeed){
         for (GameObject obj : registry.getAll()){
             startDeletion(obj);
         }
@@ -231,9 +230,7 @@ public class WorldAppState extends BaseAppState {
         new GameSave().saveGame(dungeonSeed, dungeonFloor, playerAppState.getPlayer().getHealth(), playerAppState.getInventory().getEquipmentItems(), playerAppState.getInventory().getInventoryItems());
     }
 
-    public void deleteSave(){
-        new GameSave().deleteSave();
-    }
+
 
     public int getDungeonFloor(){
         return dungeonFloor;

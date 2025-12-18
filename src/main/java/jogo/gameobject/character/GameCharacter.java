@@ -20,6 +20,8 @@ public abstract class GameCharacter extends GameObject {
     private final Timer attackTimer = new Timer(1f);
     protected WeaponModel weapon;
 
+    protected boolean invincible = false;
+
     protected GameCharacter(String name) {
         super(name);
 
@@ -58,6 +60,9 @@ public abstract class GameCharacter extends GameObject {
     }
 
     public void recieveDamage(float dmg) {
+        if (invincible){
+            return;
+        }
         float damage_dealt = Math.max(0.1f, dmg - defence);
         health -= damage_dealt;
         if (health <= 0) {

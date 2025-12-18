@@ -85,13 +85,9 @@ public class Jogo extends SimpleApplication {
         }
         stateManager.attach(new InteractionAppState(rootNode, cam, input, renderIndex, world, player));
 
+
+        // FIRST GET INSTANCE MUST PASS IN REGISTRY
         GameObjectSpawner spawner = GameObjectSpawner.getInstance(registry);
-
-
-        // Demo objects
-        // Chest chest = new Chest();
-        // chest.setPosition(26.5f, world.getRecommendedSpawnPosition().y - 2f, 26.5f);
-        // registry.add(chest);
 
 
         stateManager.attach(player);

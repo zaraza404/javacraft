@@ -124,7 +124,6 @@ public class VoxelWorld {
         }
     }
 
-    //TODO this is where you'll generate your world
     public void generateLayers(byte[][][] levelBlockLayout) {
 
         clearWorld();
@@ -202,7 +201,6 @@ public class VoxelWorld {
         if (x < 0 || x >= levelDim[0] || z < 0 || z >= levelDim[1] || y < 0 || y >= levelDim[2]-1) {
             return false;
         }
-        // Check if there's a block BELOW to stand on, and current position is air
         if ((getBlock(x, y-1, z) != 0) && (getBlock(x, y, z) == 0)){
             return true;
         }
@@ -212,7 +210,6 @@ public class VoxelWorld {
 
 
     private void initMaterials() {
-        // Single material for STONE blocks
         Texture2D tex = ProcTextures.checker(128, 4, ColorRGBA.Gray, ColorRGBA.DarkGray);
         materials.put(VoxelPalette.STONE_ID, makeLitTex(tex, 0.08f, 16f));
     }

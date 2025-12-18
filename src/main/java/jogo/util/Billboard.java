@@ -10,8 +10,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 
-public class ItemBillboard extends Node {
-    public ItemBillboard(String name, float quadSize, String texturePath, AssetManager assetManager){
+public class Billboard extends Node {
+    public Billboard(String name, float quadSize, String texturePath, AssetManager assetManager){
         super(name);
         Geometry g = new Geometry(name, new Quad(quadSize,quadSize));
 
